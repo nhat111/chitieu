@@ -1,0 +1,2147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Chi tiêu cá nhân</title>
+  <style>
+    /* ==========================================================================
+       iOS System & Design Tokens
+       ========================================================================== */
+    :root {
+      --ios-bg: #0b0f14;
+      --ios-card-bg: rgba(26, 32, 44, 0.72);
+      --ios-card-solid: #161c24;
+      --ios-card-border: rgba(255, 255, 255, 0.08);
+      --ios-separator: rgba(255, 255, 255, 0.07);
+      
+      --ios-blue: #0A84FF;
+      --ios-blue-hover: #0071e3;
+      --ios-blue-subtle: rgba(10, 132, 255, 0.16);
+      --ios-green: #30D158;
+      --ios-red: #FF453A;
+      --ios-red-subtle: rgba(255, 69, 58, 0.15);
+      --ios-amber: #FF9F0A;
+      --ios-purple: #BF5AF2;
+ 
+      --ios-text-primary: #FFFFFF;
+      --ios-text-secondary: rgba(235, 235, 245, 0.65);
+      --ios-text-tertiary: rgba(235, 235, 245, 0.38);
+ 
+      --ios-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --radius-pill: 9999px;
+ 
+      --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.35);
+      --shadow-modal: 0 20px 48px rgba(0, 0, 0, 0.6);
+      --ease-ios: cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+ 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+ 
+    body {
+      background-color: var(--ios-bg);
+      color: var(--ios-text-primary);
+      font-family: var(--ios-font);
+      font-size: 15px;
+      line-height: 1.45;
+      letter-spacing: -0.2px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      padding-bottom: 40px;
+    }
+ 
+    /* ==========================================================================
+       Layout & Grid
+       ========================================================================== */
+    .app-container {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+ 
+    /* Sticky Header */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(11, 15, 20, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--ios-separator);
+      padding: 12px 0 14px;
+      margin-bottom: 24px;
+    }
+ 
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+ 
+    .app-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+ 
+    .app-icon-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--ios-blue), #5e5ce6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 4px 10px rgba(10, 132, 255, 0.3);
+    }
+ 
+    .app-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+ 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+ 
+    .header-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+ 
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+ 
+    .nav-title {
+      font-size: 16px;
+      font-weight: 600;
+      min-width: 155px;
+      text-align: center;
+    }
+ 
+    .header-summary-pill {
+      background: var(--ios-card-solid);
+      border: 1px solid var(--ios-card-border);
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ios-text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+ 
+    .header-summary-pill strong {
+      color: var(--ios-text-primary);
+      font-weight: 700;
+    }
+ 
+    /* Main Grid 2 Columns */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+      align-items: start;
+    }
+ 
+    .grid-column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+ 
+    @media (max-width: 900px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+ 
+    /* ==========================================================================
+       iOS UI Components
+       ========================================================================== */
+    .ios-card {
+      background: var(--ios-card-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--ios-card-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      padding: 20px;
+      position: relative;
+      transition: transform 0.2s var(--ease-ios), border-color 0.2s var(--ease-ios);
+    }
+ 
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+ 
+    .card-title {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+ 
+    /* Segmented Control */
+    .segmented-control {
+      display: inline-flex;
+      background: rgba(118, 118, 128, 0.24);
+      padding: 3px;
+      border-radius: var(--radius-pill);
+      position: relative;
+      user-select: none;
+    }
+ 
+    .segment-btn {
+      background: transparent;
+      border: none;
+      color: var(--ios-text-secondary);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: all 0.2s var(--ease-ios);
+    }
+ 
+    .segment-btn.active {
+      background: #2c323d;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+      font-weight: 600;
+    }
+ 
+    /* Buttons */
+    .ios-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.18s var(--ease-ios);
+      outline: none;
+      white-space: nowrap;
+    }
+ 
+    .ios-btn:active {
+      transform: scale(0.97);
+    }
+ 
+    .ios-btn-primary {
+      background: var(--ios-blue);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+    }
+ 
+    .ios-btn-primary:hover {
+      background: var(--ios-blue-hover);
+    }
+ 
+    .ios-btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--ios-text-primary);
+      border: 1px solid var(--ios-card-border);
+    }
+ 
+    .ios-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.13);
+    }
+ 
+    .ios-btn-ghost {
+      background: transparent;
+      color: var(--ios-blue);
+      padding: 6px 12px;
+    }
+ 
+    .ios-btn-ghost:hover {
+      background: var(--ios-blue-subtle);
+    }
+ 
+    .ios-btn-danger {
+      background: var(--ios-red-subtle);
+      color: var(--ios-red);
+      border: 1px solid rgba(255, 69, 58, 0.25);
+    }
+ 
+    .ios-btn-danger:hover {
+      background: rgba(255, 69, 58, 0.25);
+    }
+ 
+    .ios-btn-icon {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--ios-text-primary);
+      border: 1px solid var(--ios-card-border);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.18s var(--ease-ios);
+    }
+ 
+    .ios-btn-icon:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+ 
+    .ios-btn-icon:active {
+      transform: scale(0.92);
+    }
+ 
+    /* Form Controls */
+    .form-group {
+      margin-bottom: 14px;
+      position: relative;
+    }
+ 
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ios-text-secondary);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+ 
+    .ios-input,
+    .ios-select {
+      width: 100%;
+      background: rgba(18, 24, 33, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      color: var(--ios-text-primary);
+      font-family: inherit;
+      font-size: 15px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.18s var(--ease-ios), box-shadow 0.18s var(--ease-ios);
+    }
+ 
+    .ios-input:focus,
+    .ios-select:focus {
+      border-color: var(--ios-blue);
+      box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.25);
+    }
+ 
+    .ios-input::placeholder {
+      color: var(--ios-text-tertiary);
+    }
+ 
+    .field-error-msg {
+      font-size: 12px;
+      color: var(--ios-red);
+      margin-top: 5px;
+      display: none;
+    }
+ 
+    .has-error .ios-input {
+      border-color: var(--ios-red);
+      box-shadow: 0 0 0 3px rgba(255, 69, 58, 0.2);
+    }
+ 
+    .has-error .field-error-msg {
+      display: block;
+    }
+ 
+    /* Subtle Card Shake Animation */
+    @keyframes iosShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .shake-error {
+      animation: iosShake 0.35s var(--ease-ios);
+    }
+ 
+    /* ==========================================================================
+       Dashboard & KPI Row
+       ========================================================================== */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+ 
+    .kpi-cell {
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid var(--ios-card-border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+ 
+    .kpi-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ios-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+ 
+    .kpi-value {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ios-text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+ 
+    .kpi-subtitle {
+      font-size: 11px;
+      color: var(--ios-text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+ 
+    @media (max-width: 600px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+ 
+    /* Canvas Chart Area */
+    .chart-wrapper {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      margin-top: 8px;
+    }
+ 
+    canvas#expense-chart {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: crosshair;
+    }
+ 
+    /* Custom iOS Chart Tooltip */
+    .chart-tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(30, 36, 48, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #ffffff;
+      white-space: nowrap;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+      transform: translate(-50%, -125%);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      opacity: 0;
+      z-index: 20;
+    }
+ 
+    .chart-tooltip.visible {
+      opacity: 1;
+      transform: translate(-50%, -135%);
+    }
+ 
+    /* ==========================================================================
+       Calendar & Weekly View
+       ========================================================================== */
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+ 
+    .weekday-col {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ios-text-tertiary);
+      padding: 4px 0;
+      text-transform: uppercase;
+    }
+ 
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+ 
+    .day-cell {
+      aspect-ratio: 1 / 1;
+      min-height: 54px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      padding: 5px 6px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s var(--ease-ios);
+      user-select: none;
+    }
+ 
+    .day-cell:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+ 
+    .day-cell.other-month {
+      opacity: 0.28;
+    }
+ 
+    .day-cell.is-today .day-number {
+      background: var(--ios-blue);
+      color: #ffffff;
+      border-radius: var(--radius-pill);
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+ 
+    .day-cell.is-selected {
+      border-color: var(--ios-blue);
+      background: var(--ios-blue-subtle) !important;
+    }
+ 
+    .day-header-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+ 
+    .day-number {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ios-text-primary);
+    }
+ 
+    .day-badge-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--ios-green);
+      display: none;
+    }
+ 
+    .has-expense .day-badge-dot {
+      display: block;
+    }
+ 
+    .day-amount-text {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--ios-text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: right;
+    }
+ 
+    /* Weekly Grid View */
+    .week-view-list {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+ 
+    .week-day-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--ios-card-border);
+      border-radius: var(--radius-md);
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.15s var(--ease-ios);
+      text-align: center;
+    }
+ 
+    .week-day-card:hover {
+      background: rgba(255, 255, 255, 0.07);
+    }
+ 
+    .week-day-card.is-selected {
+      border-color: var(--ios-blue);
+      background: var(--ios-blue-subtle);
+    }
+ 
+    .week-day-title {
+      font-size: 12px;
+      color: var(--ios-text-tertiary);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+ 
+    .week-day-num {
+      font-size: 18px;
+      font-weight: 700;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+ 
+    .week-day-card.is-today .week-day-num {
+      background: var(--ios-blue);
+      color: #fff;
+    }
+ 
+    .week-day-spent {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ios-text-secondary);
+      margin-top: 4px;
+    }
+ 
+    @media (max-width: 600px) {
+      .week-view-list {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+ 
+    /* ==========================================================================
+       Day Details & Expense List
+       ========================================================================== */
+    .details-toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+ 
+    .details-search {
+      flex: 1;
+    }
+ 
+    .details-filter {
+      width: 140px;
+    }
+ 
+    .expense-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+ 
+    /* iOS Cell Item */
+    .ios-cell {
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid var(--ios-card-border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: background 0.15s ease;
+    }
+ 
+    .ios-cell:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+ 
+    .cell-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+ 
+    .cell-icon-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+ 
+    .cell-info {
+      min-width: 0;
+    }
+ 
+    .cell-category {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ios-text-primary);
+    }
+ 
+    .cell-note {
+      font-size: 13px;
+      color: var(--ios-text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+ 
+    .cell-time {
+      font-size: 11px;
+      color: var(--ios-text-tertiary);
+    }
+ 
+    .cell-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+ 
+    .cell-amount {
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+ 
+    .cell-del-btn {
+      background: transparent;
+      border: none;
+      color: var(--ios-text-tertiary);
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+ 
+    .cell-del-btn:hover {
+      color: var(--ios-red);
+      background: var(--ios-red-subtle);
+    }
+ 
+    .empty-state {
+      padding: 36px 16px;
+      text-align: center;
+      color: var(--ios-text-tertiary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+ 
+    .empty-icon {
+      font-size: 32px;
+      opacity: 0.7;
+    }
+ 
+    /* ==========================================================================
+       Modals (iOS Style Dialogs)
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.2s var(--ease-ios);
+    }
+ 
+    .modal-backdrop.open {
+      display: flex;
+      opacity: 1;
+    }
+ 
+    .ios-modal-card {
+      background: #19202a;
+      border: 1px solid var(--ios-card-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-modal);
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      transform: scale(0.95);
+      transition: transform 0.2s var(--ease-ios);
+    }
+ 
+    .modal-backdrop.open .ios-modal-card {
+      transform: scale(1);
+    }
+ 
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+ 
+    .modal-desc {
+      font-size: 13px;
+      color: var(--ios-text-secondary);
+      margin-bottom: 16px;
+    }
+ 
+    .modal-textarea {
+      width: 100%;
+      height: 140px;
+      background: rgba(11, 15, 20, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      color: #e0e0e0;
+      font-family: monospace;
+      font-size: 12px;
+      padding: 12px;
+      outline: none;
+      resize: vertical;
+      margin-bottom: 16px;
+    }
+ 
+    .modal-textarea:focus {
+      border-color: var(--ios-blue);
+    }
+ 
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+ 
+    /* iOS Toast Notification */
+    .ios-toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-30px);
+      z-index: 200;
+      background: rgba(28, 36, 48, 0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: var(--radius-pill);
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.25s var(--ease-ios);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+ 
+    .ios-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+ 
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+ 
+  <!-- Sticky Top Header -->
+  <header class="app-header">
+    <div class="app-container">
+      <div class="header-top">
+        <div class="app-brand">
+          <div class="app-icon-badge" aria-hidden="true">💳</div>
+          <h1 class="app-title">Chi tiêu cá nhân</h1>
+        </div>
+        <div class="header-actions">
+          <button id="btn-export-json" class="ios-btn ios-btn-secondary" aria-label="Xuất dữ liệu JSON">
+            <span>↑</span> Xuất JSON
+          </button>
+          <button id="btn-import-json" class="ios-btn ios-btn-secondary" aria-label="Nhập dữ liệu JSON">
+            <span>↓</span> Nhập JSON
+          </button>
+        </div>
+      </div>
+ 
+      <div class="header-toolbar">
+        <div class="nav-controls">
+          <button id="btn-nav-prev" class="ios-btn-icon" aria-label="Kỳ trước">‹</button>
+          <div id="nav-title" class="nav-title">Tháng 11/2026</div>
+          <button id="btn-nav-next" class="ios-btn-icon" aria-label="Kỳ sau">›</button>
+          <button id="btn-nav-today" class="ios-btn ios-btn-ghost" aria-label="Về hôm nay">Hôm nay</button>
+        </div>
+ 
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <!-- Segmented Control Tuần / Tháng -->
+          <div class="segmented-control" role="tablist" aria-label="Chế độ xem">
+            <button id="seg-btn-week" class="segment-btn" role="tab" aria-selected="false">Tuần</button>
+            <button id="seg-btn-month" class="segment-btn active" role="tab" aria-selected="true">Tháng</button>
+          </div>
+          <!-- Header Summary Pill -->
+          <div class="header-summary-pill" id="header-period-total">
+            <span>Tổng kỳ:</span> <strong>0 ₫</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+ 
+  <!-- Main Content Grid -->
+  <main class="app-container">
+    <div class="main-grid">
+ 
+      <!-- Left Column: Dashboard & Calendar/Weekly -->
+      <section class="grid-column">
+        <!-- Dashboard Card -->
+        <div class="ios-card" id="card-dashboard">
+          <div class="card-header">
+            <h2 class="card-title">📊 Tổng quan kỳ</h2>
+            <span class="header-summary-pill" id="kpi-mode-label">Chế độ Tháng</span>
+          </div>
+ 
+          <!-- KPI Metrics Row -->
+          <div class="kpi-grid">
+            <div class="kpi-cell">
+              <span class="kpi-title">Tổng chi</span>
+              <span class="kpi-value" id="kpi-total">0 ₫</span>
+              <span class="kpi-subtitle" id="kpi-total-sub">0 giao dịch</span>
+            </div>
+            <div class="kpi-cell">
+              <span class="kpi-title">TB / Ngày</span>
+              <span class="kpi-value" id="kpi-avg">0 ₫</span>
+              <span class="kpi-subtitle" id="kpi-avg-sub">Trên số ngày kỳ</span>
+            </div>
+            <div class="kpi-cell">
+              <span class="kpi-title">Chi nhiều nhất</span>
+              <span class="kpi-value" id="kpi-max-amount">0 ₫</span>
+              <span class="kpi-subtitle" id="kpi-max-date">--/--</span>
+            </div>
+            <div class="kpi-cell">
+              <span class="kpi-title">Top danh mục</span>
+              <span class="kpi-value" id="kpi-top-cat">Chưa có</span>
+              <span class="kpi-subtitle" id="kpi-top-cat-sub">0 ₫</span>
+            </div>
+          </div>
+ 
+          <!-- Custom Canvas Bar Chart -->
+          <div class="chart-wrapper">
+            <canvas id="expense-chart"></canvas>
+            <div id="chart-tooltip" class="chart-tooltip"></div>
+          </div>
+        </div>
+ 
+        <!-- Calendar / Week View Card -->
+        <div class="ios-card" id="card-calendar">
+          <div class="card-header">
+            <h2 class="card-title" id="calendar-card-title">📅 Lịch chi tiêu</h2>
+            <span class="kpi-subtitle" id="calendar-hint">Nhấp ngày để xem & thêm chi tiêu</span>
+          </div>
+          <div id="calendar-content-area"></div>
+        </div>
+      </section>
+ 
+      <!-- Right Column: Day Details & Add Expense Form -->
+      <section class="grid-column">
+ 
+        <!-- Card: Chi tiết ngày -->
+        <div class="ios-card" id="card-day-details">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="day-detail-title">Chi tiết: --/--/----</h2>
+              <span class="kpi-subtitle" id="day-detail-summary">Tổng ngày: 0 ₫</span>
+            </div>
+          </div>
+ 
+          <!-- Search & Filter Controls -->
+          <div class="details-toolbar">
+            <input type="text" id="filter-search-input" class="ios-input details-search" placeholder="🔍 Tìm ghi chú...">
+            <select id="filter-category-select" class="ios-select details-filter">
+              <option value="ALL">Tất cả mục</option>
+              <option value="Ăn uống">Ăn uống</option>
+              <option value="Di chuyển">Di chuyển</option>
+              <option value="Mua sắm">Mua sắm</option>
+              <option value="Hóa đơn">Hóa đơn</option>
+              <option value="Giải trí">Giải trí</option>
+              <option value="Sức khỏe">Sức khỏe</option>
+              <option value="Khác">Khác</option>
+            </select>
+          </div>
+ 
+          <!-- Expense Items List -->
+          <div class="expense-list" id="day-expense-list"></div>
+        </div>
+ 
+        <!-- Card: Thêm khoản chi -->
+        <div class="ios-card" id="card-expense-form">
+          <div class="card-header">
+            <h2 class="card-title">➕ Thêm khoản chi mới</h2>
+          </div>
+ 
+          <form id="form-add-expense" novalidate>
+            <div class="form-group" id="group-amount">
+              <label for="inp-amount" class="form-label">Số tiền (VNĐ) *</label>
+              <input type="number" id="inp-amount" class="ios-input" placeholder="Ví dụ: 50000" min="1000" step="1000" required>
+              <div class="field-error-msg">Vui lòng nhập số tiền hợp lệ (> 0 đ)</div>
+            </div>
+ 
+            <div class="form-group">
+              <label for="inp-category" class="form-label">Danh mục *</label>
+              <select id="inp-category" class="ios-select">
+                <option value="Ăn uống">🍔 Ăn uống</option>
+                <option value="Di chuyển">🚗 Di chuyển</option>
+                <option value="Mua sắm">🛍️ Mua sắm</option>
+                <option value="Hóa đơn">📄 Hóa đơn</option>
+                <option value="Giải trí">🎮 Giải trí</option>
+                <option value="Sức khỏe">💊 Sức khỏe</option>
+                <option value="Khác">📦 Khác</option>
+              </select>
+            </div>
+ 
+            <div class="form-group">
+              <label for="inp-date" class="form-label">Ngày ghi nhận *</label>
+              <input type="date" id="inp-date" class="ios-input" required>
+            </div>
+ 
+            <div class="form-group">
+              <label for="inp-note" class="form-label">Ghi chú (Tùy chọn)</label>
+              <input type="text" id="inp-note" class="ios-input" placeholder="Ví dụ: Ăn trưa đồng nghiệp, Đổ xăng...">
+            </div>
+ 
+            <button type="submit" class="ios-btn ios-btn-primary" style="width: 100%; padding: 12px; margin-top: 6px;">
+              Lưu khoản chi
+            </button>
+          </form>
+        </div>
+ 
+      </section>
+    </div>
+  </main>
+ 
+  <!-- Export JSON Modal -->
+  <div id="modal-export" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-export-title">
+    <div class="ios-modal-card">
+      <h3 id="modal-export-title" class="modal-title">Xuất dữ liệu chi tiêu</h3>
+      <p class="modal-desc">Sao chép mã JSON dưới đây để lưu trữ hoặc chuyển sang thiết bị khác.</p>
+      <textarea id="export-textarea" class="modal-textarea" readonly></textarea>
+      <div class="modal-actions">
+        <button id="btn-export-close" class="ios-btn ios-btn-secondary">Đóng</button>
+        <button id="btn-export-copy" class="ios-btn ios-btn-primary">Sao chép JSON</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Import JSON Modal -->
+  <div id="modal-import" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-import-title">
+    <div class="ios-modal-card">
+      <h3 id="modal-import-title" class="modal-title">Nhập dữ liệu chi tiêu</h3>
+      <p class="modal-desc">Dán nội dung JSON đã sao lưu vào khung bên dưới.</p>
+      
+      <div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+        <span style="font-size: 13px; color: var(--ios-text-secondary);">Chế độ nhập:</span>
+        <div class="segmented-control">
+          <button id="import-mode-merge" class="segment-btn active" type="button">Gộp</button>
+          <button id="import-mode-replace" class="segment-btn" type="button">Ghi đè</button>
+        </div>
+      </div>
+ 
+      <textarea id="import-textarea" class="modal-textarea" placeholder="[ { &quot;id&quot;: &quot;...&quot;, &quot;amount&quot;: 50000, ... } ]"></textarea>
+      
+      <div class="modal-actions">
+        <button id="btn-import-close" class="ios-btn ios-btn-secondary">Hủy</button>
+        <button id="btn-import-submit" class="ios-btn ios-btn-primary">Bắt đầu nhập</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Delete Confirm Dialog -->
+  <div id="modal-delete" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="ios-modal-card" style="max-width: 380px; text-align: center;">
+      <div style="font-size: 36px; margin-bottom: 8px;">🗑️</div>
+      <h3 class="modal-title">Xóa khoản chi?</h3>
+      <p class="modal-desc" style="margin-bottom: 20px;">Hành động này sẽ không thể khôi phục lại.</p>
+      <div class="modal-actions" style="justify-content: center;">
+        <button id="btn-delete-cancel" class="ios-btn ios-btn-secondary">Hủy</button>
+        <button id="btn-delete-confirm" class="ios-btn ios-btn-danger">Xóa luôn</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Toast Notification -->
+  <div id="toast-pill" class="ios-toast" role="status" aria-live="polite">
+    <span id="toast-icon">✓</span>
+    <span id="toast-msg">Thông báo</span>
+  </div>
+ 
+  <!-- Logic Script -->
+  <script>
+    (function () {
+      'use strict';
+ 
+      /* ==========================================================================
+         Constants & Initial Setup
+         ========================================================================== */
+      const STORAGE_KEY = 'pem_expenses_v1';
+ 
+      const CATEGORIES = [
+        'Ăn uống',
+        'Di chuyển',
+        'Mua sắm',
+        'Hóa đơn',
+        'Giải trí',
+        'Sức khỏe',
+        'Khác'
+      ];
+ 
+      const CATEGORY_ICONS = {
+        'Ăn uống': '🍔',
+        'Di chuyển': '🚗',
+        'Mua sắm': '🛍️',
+        'Hóa đơn': '📄',
+        'Giải trí': '🎮',
+        'Sức khỏe': '💊',
+        'Khác': '📦'
+      };
+ 
+      const WEEKDAY_NAMES = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
+ 
+      const currencyFormatter = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND'
+      });
+ 
+      function formatVND(amount) {
+        return currencyFormatter.format(amount || 0);
+      }
+ 
+      function formatCompactVND(amount) {
+        if (!amount) return '0 ₫';
+        if (amount >= 1000000) {
+          return (amount / 1000000).toFixed(1).replace('.0', '') + 'tr';
+        }
+        if (amount >= 1000) {
+          return Math.round(amount / 1000) + 'k';
+        }
+        return amount + '₫';
+      }
+ 
+      /* Date Helpers */
+      function toISODate(d) {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+ 
+      function parseISODate(isoStr) {
+        const parts = (isoStr || '').split('-');
+        if (parts.length !== 3) return new Date();
+        return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+      }
+ 
+      function formatDisplayDateVN(isoStr) {
+        const parts = (isoStr || '').split('-');
+        if (parts.length !== 3) return isoStr;
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+ 
+      function getMondayOfDate(d) {
+        const copy = new Date(d);
+        const day = copy.getDay(); // 0 is Sunday
+        const diff = copy.getDate() - day + (day === 0 ? -6 : 1);
+        copy.setDate(diff);
+        return copy;
+      }
+ 
+      function getDaysInMonth(year, month) {
+        return new Date(year, month + 1, 0).getDate();
+      }
+ 
+      /* Sample Data if LocalStorage is Empty */
+      function createSampleData() {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = now.getMonth();
+        const pad = (n) => String(n).padStart(2, '0');
+ 
+        return [
+          {
+            id: 'exp_init_1',
+            dateISO: `${y}-${pad(m + 1)}-${pad(Math.min(2, getDaysInMonth(y, m)))}`,
+            amount: 45000,
+            category: 'Ăn uống',
+            note: 'Phở bò tái lăn',
+            createdAt: new Date().toISOString()
+          },
+          {
+            id: 'exp_init_2',
+            dateISO: `${y}-${pad(m + 1)}-${pad(Math.min(2, getDaysInMonth(y, m)))}`,
+            amount: 150000,
+            category: 'Di chuyển',
+            note: 'Đổ xăng xe máy',
+            createdAt: new Date().toISOString()
+          },
+          {
+            id: 'exp_init_3',
+            dateISO: `${y}-${pad(m + 1)}-${pad(Math.min(4, getDaysInMonth(y, m)))}`,
+            amount: 350000,
+            category: 'Mua sắm',
+            note: 'Áo thun Uniqlo',
+            createdAt: new Date().toISOString()
+          },
+          {
+            id: 'exp_init_4',
+            dateISO: `${y}-${pad(m + 1)}-${pad(Math.min(5, getDaysInMonth(y, m)))}`,
+            amount: 520000,
+            category: 'Hóa đơn',
+            note: 'Tiền internet tháng',
+            createdAt: new Date().toISOString()
+          },
+          {
+            id: 'exp_init_5',
+            dateISO: `${y}-${pad(m + 1)}-${pad(Math.min(7, getDaysInMonth(y, m)))}`,
+            amount: 120000,
+            category: 'Giải trí',
+            note: 'Vé xem phim cuối tuần',
+            createdAt: new Date().toISOString()
+          }
+        ];
+      }
+ 
+      /* ==========================================================================
+         Application State
+         ========================================================================== */
+      const initialToday = new Date();
+      const state = {
+        viewMode: 'month', // 'month' | 'week'
+        currentYear: initialToday.getFullYear(),
+        currentMonth: initialToday.getMonth(), // 0-indexed
+        weekStartISO: toISODate(getMondayOfDate(initialToday)),
+        selectedDateISO: toISODate(initialToday),
+        filterCategory: 'ALL',
+        searchQuery: '',
+        importMode: 'merge', // 'merge' | 'replace'
+        deletingExpenseId: null,
+        expenses: []
+      };
+ 
+      /* ==========================================================================
+         Storage Actions
+         ========================================================================== */
+      function loadExpenses() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            state.expenses = JSON.parse(raw);
+          } else {
+            state.expenses = createSampleData();
+            saveExpenses();
+          }
+        } catch (e) {
+          console.error('Failed to load localStorage', e);
+          state.expenses = createSampleData();
+        }
+      }
+ 
+      function saveExpenses() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state.expenses));
+        } catch (e) {
+          console.error('Failed to save to localStorage', e);
+          showToast('Lỗi lưu trữ cục bộ!', '⚠️');
+        }
+      }
+ 
+      /* ==========================================================================
+         Calculations & Aggregate Selectors
+         ========================================================================== */
+      function computeDayTotal(dateISO) {
+        return state.expenses
+          .filter(e => e.dateISO === dateISO)
+          .reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+      }
+ 
+      function getWeekRange(weekStartISO) {
+        const monday = parseISODate(weekStartISO);
+        const dates = [];
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(monday);
+          d.setDate(monday.getDate() + i);
+          dates.push(toISODate(d));
+        }
+        return dates;
+      }
+ 
+      function computeRangeTotals(startISO, endISO) {
+        const inRange = state.expenses.filter(e => e.dateISO >= startISO && e.dateISO <= endISO);
+        const total = inRange.reduce((acc, cur) => acc + (Number(cur.amount) || 0), 0);
+ 
+        // Group by day for max day
+        const dayMap = {};
+        inRange.forEach(e => {
+          dayMap[e.dateISO] = (dayMap[e.dateISO] || 0) + Number(e.amount);
+        });
+ 
+        let maxDay = { dateISO: '', amount: 0 };
+        Object.keys(dayMap).forEach(d => {
+          if (dayMap[d] > maxDay.amount) {
+            maxDay = { dateISO: d, amount: dayMap[d] };
+          }
+        });
+ 
+        // Group by category for top category
+        const catMap = {};
+        inRange.forEach(e => {
+          catMap[e.category] = (catMap[e.category] || 0) + Number(e.amount);
+        });
+ 
+        let topCat = { category: 'Chưa có', amount: 0 };
+        Object.keys(catMap).forEach(c => {
+          if (catMap[c] > topCat.amount) {
+            topCat = { category: c, amount: catMap[c] };
+          }
+        });
+ 
+        return {
+          total,
+          count: inRange.length,
+          dayMap,
+          maxDay,
+          topCat
+        };
+      }
+ 
+      /* ==========================================================================
+         Render Subroutines
+         ========================================================================== */
+ 
+      // 1. Render Header
+      function renderHeader() {
+        const navTitleEl = document.getElementById('nav-title');
+        const headerPeriodTotalEl = document.getElementById('header-period-total');
+        const segBtnWeek = document.getElementById('seg-btn-week');
+        const segBtnMonth = document.getElementById('seg-btn-month');
+ 
+        if (state.viewMode === 'month') {
+          segBtnMonth.classList.add('active');
+          segBtnWeek.classList.remove('active');
+          segBtnMonth.setAttribute('aria-selected', 'true');
+          segBtnWeek.setAttribute('aria-selected', 'false');
+ 
+          const monthName = `Tháng ${String(state.currentMonth + 1).padStart(2, '0')}/${state.currentYear}`;
+          navTitleEl.textContent = monthName;
+ 
+          const daysInM = getDaysInMonth(state.currentYear, state.currentMonth);
+          const startISO = `${state.currentYear}-${String(state.currentMonth + 1).padStart(2, '0')}-01`;
+          const endISO = `${state.currentYear}-${String(state.currentMonth + 1).padStart(2, '0')}-${String(daysInM).padStart(2, '0')}`;
+          const metrics = computeRangeTotals(startISO, endISO);
+ 
+          headerPeriodTotalEl.innerHTML = `<span>Tổng tháng:</span> <strong>${formatVND(metrics.total)}</strong>`;
+        } else {
+          segBtnWeek.classList.add('active');
+          segBtnMonth.classList.remove('active');
+          segBtnWeek.setAttribute('aria-selected', 'true');
+          segBtnMonth.setAttribute('aria-selected', 'false');
+ 
+          const weekDates = getWeekRange(state.weekStartISO);
+          const startStr = formatDisplayDateVN(weekDates[0]);
+          const endStr = formatDisplayDateVN(weekDates[6]);
+          navTitleEl.textContent = `${startStr.slice(0, 5)} - ${endStr.slice(0, 5)}`;
+ 
+          const metrics = computeRangeTotals(weekDates[0], weekDates[6]);
+          headerPeriodTotalEl.innerHTML = `<span>Tổng tuần:</span> <strong>${formatVND(metrics.total)}</strong>`;
+        }
+      }
+ 
+      // 2. Render Dashboard (KPIs + Canvas Bar Chart)
+      let chartBarPositions = []; // To store hitboxes for custom tooltip
+ 
+      function renderDashboard() {
+        const kpiModeLabel = document.getElementById('kpi-mode-label');
+        const kpiTotal = document.getElementById('kpi-total');
+        const kpiTotalSub = document.getElementById('kpi-total-sub');
+        const kpiAvg = document.getElementById('kpi-avg');
+        const kpiAvgSub = document.getElementById('kpi-avg-sub');
+        const kpiMaxAmount = document.getElementById('kpi-max-amount');
+        const kpiMaxDate = document.getElementById('kpi-max-date');
+        const kpiTopCat = document.getElementById('kpi-top-cat');
+        const kpiTopCatSub = document.getElementById('kpi-top-cat-sub');
+ 
+        let startISO, endISO, numDaysInPeriod, chartData = [];
+ 
+        if (state.viewMode === 'month') {
+          kpiModeLabel.textContent = 'Kỳ Tháng';
+          numDaysInPeriod = getDaysInMonth(state.currentYear, state.currentMonth);
+          startISO = `${state.currentYear}-${String(state.currentMonth + 1).padStart(2, '0')}-01`;
+          endISO = `${state.currentYear}-${String(state.currentMonth + 1).padStart(2, '0')}-${String(numDaysInPeriod).padStart(2, '0')}`;
+ 
+          for (let d = 1; d <= numDaysInPeriod; d++) {
+            const dateISO = `${state.currentYear}-${String(state.currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            chartData.push({
+              label: String(d),
+              dateISO,
+              amount: computeDayTotal(dateISO)
+            });
+          }
+        } else {
+          kpiModeLabel.textContent = 'Kỳ Tuần';
+          numDaysInPeriod = 7;
+          const weekDates = getWeekRange(state.weekStartISO);
+          startISO = weekDates[0];
+          endISO = weekDates[6];
+ 
+          chartData = weekDates.map((dISO, idx) => ({
+            label: `${WEEKDAY_NAMES[idx]} ${dISO.slice(8, 10)}`,
+            dateISO: dISO,
+            amount: computeDayTotal(dISO)
+          }));
+        }
+ 
+        const metrics = computeRangeTotals(startISO, endISO);
+ 
+        kpiTotal.textContent = formatVND(metrics.total);
+        kpiTotalSub.textContent = `${metrics.count} khoản chi`;
+ 
+        const avg = numDaysInPeriod > 0 ? Math.round(metrics.total / numDaysInPeriod) : 0;
+        kpiAvg.textContent = formatVND(avg);
+        kpiAvgSub.textContent = state.viewMode === 'month' ? `${numDaysInPeriod} ngày trong tháng` : '7 ngày trong tuần';
+ 
+        if (metrics.maxDay.amount > 0) {
+          kpiMaxAmount.textContent = formatVND(metrics.maxDay.amount);
+          kpiMaxDate.textContent = formatDisplayDateVN(metrics.maxDay.dateISO);
+        } else {
+          kpiMaxAmount.textContent = '0 ₫';
+          kpiMaxDate.textContent = 'Không có';
+        }
+ 
+        if (metrics.topCat.amount > 0) {
+          const icon = CATEGORY_ICONS[metrics.topCat.category] || '🏷️';
+          kpiTopCat.textContent = `${icon} ${metrics.topCat.category}`;
+          kpiTopCatSub.textContent = formatVND(metrics.topCat.amount);
+        } else {
+          kpiTopCat.textContent = 'Chưa có';
+          kpiTopCatSub.textContent = '0 ₫';
+        }
+ 
+        drawCanvasChart(chartData, metrics.maxDay.dateISO);
+      }
+ 
+      function drawCanvasChart(data, maxDateISO) {
+        const canvas = document.getElementById('expense-chart');
+        if (!canvas) return;
+ 
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+ 
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+ 
+        const width = rect.width;
+        const height = rect.height;
+ 
+        ctx.clearRect(0, 0, width, height);
+        chartBarPositions = [];
+ 
+        if (data.length === 0) return;
+ 
+        const paddingBottom = 26;
+        const paddingTop = 16;
+        const chartH = height - paddingBottom - paddingTop;
+ 
+        const maxVal = Math.max(...data.map(d => d.amount), 50000);
+ 
+        const n = data.length;
+        const totalGap = (n - 1) * 4;
+        const barWidth = Math.max(3, (width - 24 - totalGap) / n);
+        const startX = 12;
+ 
+        data.forEach((item, i) => {
+          const x = startX + i * (barWidth + 4);
+          const barH = (item.amount / maxVal) * chartH;
+          const y = height - paddingBottom - barH;
+ 
+          chartBarPositions.push({
+            x,
+            y,
+            width: barWidth,
+            height: barH || 4,
+            dateISO: item.dateISO,
+            amount: item.amount
+          });
+ 
+          // Bar Background Track (iOS subtle pill)
+          ctx.beginPath();
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+          const trackRadius = Math.min(barWidth / 2, 4);
+          roundRect(ctx, x, paddingTop, barWidth, chartH, trackRadius);
+          ctx.fill();
+ 
+          // Bar Foreground
+          if (item.amount > 0) {
+            ctx.beginPath();
+            if (item.dateISO === maxDateISO && item.amount > 0) {
+              ctx.fillStyle = '#FF9F0A'; // Apple Amber highlight for highest day
+            } else if (item.dateISO === state.selectedDateISO) {
+              ctx.fillStyle = '#30D158'; // Green for selected date
+            } else {
+              ctx.fillStyle = '#0A84FF'; // iOS standard Blue
+            }
+            roundRect(ctx, x, y, barWidth, barH, Math.min(barWidth / 2, 4));
+            ctx.fill();
+          }
+ 
+          // X Axis Labels
+          ctx.fillStyle = 'rgba(235, 235, 245, 0.4)';
+          ctx.font = '10px -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
+          ctx.textAlign = 'center';
+ 
+          if (state.viewMode === 'month') {
+            // Label selectively to prevent clutter
+            const dayNum = Number(item.label);
+            if (dayNum === 1 || dayNum === 10 || dayNum === 20 || dayNum === n) {
+              ctx.fillText(String(dayNum), x + barWidth / 2, height - 8);
+            }
+          } else {
+            // Week mode: Show T2, T3...
+            ctx.fillText(item.label, x + barWidth / 2, height - 8);
+          }
+        });
+      }
+ 
+      function roundRect(ctx, x, y, width, height, radius) {
+        if (height < radius * 2) radius = height / 2;
+        if (width < radius * 2) radius = width / 2;
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.arcTo(x + width, y, x + width, y + height, radius);
+        ctx.arcTo(x + width, y + height, x, y + height, radius);
+        ctx.arcTo(x, y + height, x, y, radius);
+        ctx.arcTo(x, y, x + width, y, radius);
+        ctx.closePath();
+      }
+ 
+      // 3. Render Calendar or Week View
+      function renderCalendarOrWeek() {
+        const area = document.getElementById('calendar-content-area');
+        const calTitle = document.getElementById('calendar-card-title');
+        const todayISO = toISODate(new Date());
+ 
+        if (state.viewMode === 'month') {
+          calTitle.innerHTML = '📅 Lịch chi tiêu tháng';
+          let html = `
+            <div class="calendar-weekdays" aria-hidden="true">
+              <div class="weekday-col">T2</div>
+              <div class="weekday-col">T3</div>
+              <div class="weekday-col">T4</div>
+              <div class="weekday-col">T5</div>
+              <div class="weekday-col">T6</div>
+              <div class="weekday-col">T7</div>
+              <div class="weekday-col">CN</div>
+            </div>
+            <div class="calendar-grid">
+          `;
+ 
+          const year = state.currentYear;
+          const month = state.currentMonth;
+          const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0 is Sun
+          const startOffset = (firstDayOfMonth === 0 ? 7 : firstDayOfMonth) - 1; // Mon = 0
+          const daysInMonth = getDaysInMonth(year, month);
+          const daysInPrevMonth = getDaysInMonth(year, month - 1);
+ 
+          // Cells from previous month
+          for (let i = startOffset - 1; i >= 0; i--) {
+            const pDay = daysInPrevMonth - i;
+            html += `
+              <div class="day-cell other-month" aria-disabled="true">
+                <div class="day-number">${pDay}</div>
+              </div>
+            `;
+          }
+ 
+          // Days in current month
+          for (let d = 1; d <= daysInMonth; d++) {
+            const dISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            const total = computeDayTotal(dISO);
+            const isToday = dISO === todayISO;
+            const isSelected = dISO === state.selectedDateISO;
+            const hasExpense = total > 0;
+ 
+            html += `
+              <div class="day-cell ${isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''} ${hasExpense ? 'has-expense' : ''}" 
+                   data-date="${dISO}" 
+                   tabindex="0"
+                   role="button"
+                   aria-label="Ngày ${d} tháng ${month + 1}, chi tiêu ${formatVND(total)}">
+                <div class="day-header-line">
+                  <span class="day-number">${d}</span>
+                  <span class="day-badge-dot" aria-hidden="true"></span>
+                </div>
+                <div class="day-amount-text">${total > 0 ? formatCompactVND(total) : ''}</div>
+              </div>
+            `;
+          }
+ 
+          // Fill trailing empty cells for clean grid
+          const totalCells = startOffset + daysInMonth;
+          const remaining = (7 - (totalCells % 7)) % 7;
+          for (let i = 1; i <= remaining; i++) {
+            html += `
+              <div class="day-cell other-month" aria-disabled="true">
+                <div class="day-number">${i}</div>
+              </div>
+            `;
+          }
+ 
+          html += `</div>`;
+          area.innerHTML = html;
+ 
+        } else {
+          // Week View Mode
+          calTitle.innerHTML = '🗓️ Chi tiêu trong tuần';
+          const weekDates = getWeekRange(state.weekStartISO);
+          let html = `<div class="week-view-list">`;
+ 
+          weekDates.forEach((dISO, idx) => {
+            const total = computeDayTotal(dISO);
+            const isToday = dISO === todayISO;
+            const isSelected = dISO === state.selectedDateISO;
+            const dObj = parseISODate(dISO);
+ 
+            html += `
+              <div class="week-day-card ${isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''}" 
+                   data-date="${dISO}" 
+                   tabindex="0"
+                   role="button"
+                   aria-label="${WEEKDAY_NAMES[idx]} ngày ${dObj.getDate()}, chi tiêu ${formatVND(total)}">
+                <span class="week-day-title">${WEEKDAY_NAMES[idx]}</span>
+                <span class="week-day-num">${dObj.getDate()}</span>
+                <span class="week-day-spent">${total > 0 ? formatCompactVND(total) : '0 ₫'}</span>
+              </div>
+            `;
+          });
+ 
+          html += `</div>`;
+          area.innerHTML = html;
+        }
+ 
+        // Attach Click Listeners to Calendar Cells
+        area.querySelectorAll('[data-date]').forEach(el => {
+          el.addEventListener('click', () => {
+            state.selectedDateISO = el.getAttribute('data-date');
+            document.getElementById('inp-date').value = state.selectedDateISO;
+            render();
+          });
+        });
+      }
+ 
+      // 4. Render Day Details
+      function renderDayDetails() {
+        const titleEl = document.getElementById('day-detail-title');
+        const summaryEl = document.getElementById('day-detail-summary');
+        const listEl = document.getElementById('day-expense-list');
+ 
+        const displayDate = formatDisplayDateVN(state.selectedDateISO);
+        titleEl.textContent = `Chi tiết: ${displayDate}`;
+ 
+        const dayTotal = computeDayTotal(state.selectedDateISO);
+        summaryEl.textContent = `Tổng ngày: ${formatVND(dayTotal)}`;
+ 
+        // Filter and Search
+        let items = state.expenses.filter(e => e.dateISO === state.selectedDateISO);
+ 
+        if (state.filterCategory !== 'ALL') {
+          items = items.filter(e => e.category === state.filterCategory);
+        }
+ 
+        if (state.searchQuery.trim() !== '') {
+          const q = state.searchQuery.toLowerCase();
+          items = items.filter(e => 
+            (e.note && e.note.toLowerCase().includes(q)) ||
+            e.category.toLowerCase().includes(q)
+          );
+        }
+ 
+        // Sort by creation time descending
+        items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+ 
+        if (items.length === 0) {
+          listEl.innerHTML = `
+            <div class="empty-state">
+              <span class="empty-icon">☕</span>
+              <p>Chưa có khoản chi nào phù hợp.</p>
+              <p style="font-size: 12px; color: var(--ios-text-tertiary);">Nhập thông tin bên dưới để thêm mới.</p>
+            </div>
+          `;
+          return;
+        }
+ 
+        let html = '';
+        items.forEach(item => {
+          const icon = CATEGORY_ICONS[item.category] || '🏷️';
+          const timeStr = item.createdAt ? new Date(item.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) : '';
+          
+          html += `
+            <div class="ios-cell">
+              <div class="cell-left">
+                <div class="cell-icon-box" aria-hidden="true">${icon}</div>
+                <div class="cell-info">
+                  <div class="cell-category">${item.category}</div>
+                  <div class="cell-note" title="${escapeHtml(item.note || 'Không có ghi chú')}">
+                    ${escapeHtml(item.note || 'Không có ghi chú')}
+                  </div>
+                  ${timeStr ? `<div class="cell-time">${timeStr}</div>` : ''}
+                </div>
+              </div>
+              <div class="cell-right">
+                <span class="cell-amount">${formatVND(item.amount)}</span>
+                <button class="cell-del-btn" data-delete-id="${item.id}" aria-label="Xóa khoản chi ${item.category}">
+                  ✕
+                </button>
+              </div>
+            </div>
+          `;
+        });
+ 
+        listEl.innerHTML = html;
+ 
+        // Attach Delete Click Listeners
+        listEl.querySelectorAll('[data-delete-id]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            state.deletingExpenseId = btn.getAttribute('data-delete-id');
+            openDeleteModal();
+          });
+        });
+      }
+ 
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+ 
+      // Master Render
+      function render() {
+        renderHeader();
+        renderDashboard();
+        renderCalendarOrWeek();
+        renderDayDetails();
+      }
+ 
+      /* ==========================================================================
+         Toast System
+         ========================================================================== */
+      let toastTimer = null;
+      function showToast(msg, icon = '✓') {
+        const toastEl = document.getElementById('toast-pill');
+        const iconEl = document.getElementById('toast-icon');
+        const msgEl = document.getElementById('toast-msg');
+ 
+        iconEl.textContent = icon;
+        msgEl.textContent = msg;
+ 
+        toastEl.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastEl.classList.remove('show');
+        }, 2400);
+      }
+ 
+      /* ==========================================================================
+         Modals Handlers
+         ========================================================================== */
+      const modalExport = document.getElementById('modal-export');
+      const modalImport = document.getElementById('modal-import');
+      const modalDelete = document.getElementById('modal-delete');
+ 
+      function openModal(el) {
+        el.classList.add('open');
+      }
+ 
+      function closeModal(el) {
+        el.classList.remove('open');
+      }
+ 
+      function openDeleteModal() {
+        openModal(modalDelete);
+      }
+/* ==========================================================================
+         Event Listeners Initialization
+         ========================================================================== */
+      function setupEvents() {
+        // 1. Navigation Prev / Next / Today
+        document.getElementById('btn-nav-prev').addEventListener('click', () => {
+          if (state.viewMode === 'month') {
+            state.currentMonth--;
+            if (state.currentMonth < 0) {
+              state.currentMonth = 11;
+              state.currentYear--;
+            }
+          } else {
+            const currentMon = parseISODate(state.weekStartISO);
+            currentMon.setDate(currentMon.getDate() - 7);
+            state.weekStartISO = toISODate(currentMon);
+          }
+          render();
+        });
+ 
+        document.getElementById('btn-nav-next').addEventListener('click', () => {
+          if (state.viewMode === 'month') {
+            state.currentMonth++;
+            if (state.currentMonth > 11) {
+              state.currentMonth = 0;
+              state.currentYear++;
+            }
+          } else {
+            const currentMon = parseISODate(state.weekStartISO);
+            currentMon.setDate(currentMon.getDate() + 7);
+            state.weekStartISO = toISODate(currentMon);
+          }
+          render();
+        });
+ 
+        document.getElementById('btn-nav-today').addEventListener('click', () => {
+          const now = new Date();
+          state.currentYear = now.getFullYear();
+          state.currentMonth = now.getMonth();
+          state.weekStartISO = toISODate(getMondayOfDate(now));
+          state.selectedDateISO = toISODate(now);
+          document.getElementById('inp-date').value = state.selectedDateISO;
+          render();
+        });
+ 
+        // 2. Segmented Mode Switcher (Tuần / Tháng)
+        document.getElementById('seg-btn-month').addEventListener('click', () => {
+          state.viewMode = 'month';
+          render();
+        });
+ 
+        document.getElementById('seg-btn-week').addEventListener('click', () => {
+          state.viewMode = 'week';
+          // Align week to current selected date
+          state.weekStartISO = toISODate(getMondayOfDate(parseISODate(state.selectedDateISO)));
+          render();
+        });
+ 
+        // 3. Search and Category Filter
+        document.getElementById('filter-search-input').addEventListener('input', (e) => {
+          state.searchQuery = e.target.value;
+          renderDayDetails();
+        });
+ 
+        document.getElementById('filter-category-select').addEventListener('change', (e) => {
+          state.filterCategory = e.target.value;
+          renderDayDetails();
+        });
+ 
+        // 4. Form Submit: Add Expense
+        const formExpense = document.getElementById('form-add-expense');
+        const inpAmount = document.getElementById('inp-amount');
+        const groupAmount = document.getElementById('group-amount');
+        const cardForm = document.getElementById('card-expense-form');
+ 
+        formExpense.addEventListener('submit', (e) => {
+          e.preventDefault();
+ 
+          const amountVal = Number(inpAmount.value);
+          if (!amountVal || amountVal <= 0) {
+            groupAmount.classList.add('has-error');
+            cardForm.classList.remove('shake-error');
+            void cardForm.offsetWidth; // Trigger reflow
+            cardForm.classList.add('shake-error');
+            inpAmount.focus();
+            return;
+          }
+ 
+          groupAmount.classList.remove('has-error');
+          cardForm.classList.remove('shake-error');
+ 
+          const categoryVal = document.getElementById('inp-category').value;
+          const dateVal = document.getElementById('inp-date').value || state.selectedDateISO;
+          const noteVal = document.getElementById('inp-note').value.trim();
+ 
+          const newExpense = {
+            id: 'exp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+            dateISO: dateVal,
+            amount: amountVal,
+            category: categoryVal,
+            note: noteVal,
+            createdAt: new Date().toISOString()
+          };
+ 
+          state.expenses.push(newExpense);
+          saveExpenses();
+ 
+          // Sync calendar selection to date of new expense
+          state.selectedDateISO = dateVal;
+          const dObj = parseISODate(dateVal);
+          state.currentYear = dObj.getFullYear();
+          state.currentMonth = dObj.getMonth();
+          state.weekStartISO = toISODate(getMondayOfDate(dObj));
+ 
+          // Reset inputs
+          inpAmount.value = '';
+          document.getElementById('inp-note').value = '';
+ 
+          render();
+          showToast('Đã lưu khoản chi mới!', '✓');
+        });
+ 
+        inpAmount.addEventListener('input', () => {
+          if (Number(inpAmount.value) > 0) {
+            groupAmount.classList.remove('has-error');
+          }
+        });
+ 
+        // 5. Delete Expense Modal Handlers
+        document.getElementById('btn-delete-cancel').addEventListener('click', () => {
+          state.deletingExpenseId = null;
+          closeModal(modalDelete);
+        });
+ 
+        document.getElementById('btn-delete-confirm').addEventListener('click', () => {
+          if (state.deletingExpenseId) {
+            state.expenses = state.expenses.filter(e => e.id !== state.deletingExpenseId);
+            saveExpenses();
+            state.deletingExpenseId = null;
+            closeModal(modalDelete);
+            render();
+            showToast('Đã xóa khoản chi!', '🗑️');
+          }
+        });
+ 
+        // 6. Export JSON
+        document.getElementById('btn-export-json').addEventListener('click', () => {
+          const jsonText = JSON.stringify(state.expenses, null, 2);
+          document.getElementById('export-textarea').value = jsonText;
+          openModal(modalExport);
+        });
+ 
+        document.getElementById('btn-export-close').addEventListener('click', () => {
+          closeModal(modalExport);
+        });
+ 
+        document.getElementById('btn-export-copy').addEventListener('click', () => {
+          const textarea = document.getElementById('export-textarea');
+          textarea.select();
+          navigator.clipboard.writeText(textarea.value).then(() => {
+            showToast('Đã sao chép vào bộ nhớ tạm!', '📋');
+          }).catch(() => {
+            showToast('Không thể sao chép tự động!', '⚠️');
+          });
+        });
+ 
+        // 7. Import JSON
+        const importModeMergeBtn = document.getElementById('import-mode-merge');
+        const importModeReplaceBtn = document.getElementById('import-mode-replace');
+ 
+        importModeMergeBtn.addEventListener('click', () => {
+          state.importMode = 'merge';
+          importModeMergeBtn.classList.add('active');
+          importModeReplaceBtn.classList.remove('active');
+        });
+ 
+        importModeReplaceBtn.addEventListener('click', () => {
+          state.importMode = 'replace';
+          importModeReplaceBtn.classList.add('active');
+          importModeMergeBtn.classList.remove('active');
+        });
+ 
+        document.getElementById('btn-import-json').addEventListener('click', () => {
+          document.getElementById('import-textarea').value = '';
+          openModal(modalImport);
+        });
+ 
+        document.getElementById('btn-import-close').addEventListener('click', () => {
+          closeModal(modalImport);
+        });
+ 
+        document.getElementById('btn-import-submit').addEventListener('click', () => {
+          const raw = document.getElementById('import-textarea').value.trim();
+          if (!raw) {
+            showToast('Vui lòng dán dữ liệu JSON!', '⚠️');
+            return;
+          }
+ 
+          try {
+            const parsed = JSON.parse(raw);
+            if (!Array.isArray(parsed)) {
+              throw new Error('Dữ liệu phải là một mảng []');
+            }
+ 
+            // Simple validation of item structure
+            const validItems = parsed.filter(item => item && item.amount && item.dateISO);
+            if (validItems.length === 0) {
+              throw new Error('Không có mục chi tiêu hợp lệ');
+            }
+ 
+            if (state.importMode === 'replace') {
+              state.expenses = validItems;
+            } else {
+              // Merge and deduplicate by id
+              const existingMap = new Map(state.expenses.map(e => [e.id, e]));
+              validItems.forEach(item => {
+                const id = item.id || ('exp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6));
+                existingMap.set(id, { ...item, id });
+              });
+              state.expenses = Array.from(existingMap.values());
+            }
+ 
+            saveExpenses();
+            closeModal(modalImport);
+            render();
+            showToast(`Nhập thành công (${validItems.length} khoản)!`, '✓');
+          } catch (err) {
+            console.error(err);
+            showToast('JSON không hợp lệ!', '⚠️');
+          }
+        });
+ 
+        // Close modals on clicking backdrop
+        [modalExport, modalImport, modalDelete].forEach(modal => {
+          modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+              closeModal(modal);
+            }
+          });
+        });
+ 
+        // 8. Custom Canvas Tooltip on Hover/Touch
+        const canvas = document.getElementById('expense-chart');
+        const tooltip = document.getElementById('chart-tooltip');
+ 
+        function handleChartPointer(evt) {
+          const rect = canvas.getBoundingClientRect();
+          const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+          const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+ 
+          const mouseX = clientX - rect.left;
+          const mouseY = clientY - rect.top;
+ 
+          // Find bar match
+          const hit = chartBarPositions.find(b => mouseX >= b.x - 3 && mouseX <= b.x + b.width + 3);
+ 
+          if (hit) {
+            const displayDate = formatDisplayDateVN(hit.dateISO);
+            tooltip.textContent = `${displayDate}: ${formatVND(hit.amount)}`;
+            tooltip.style.left = `${hit.x + hit.width / 2}px`;
+            tooltip.style.top = `${hit.y}px`;
+            tooltip.classList.add('visible');
+          } else {
+            tooltip.classList.remove('visible');
+          }
+        }
+ 
+        canvas.addEventListener('mousemove', handleChartPointer);
+        canvas.addEventListener('touchstart', handleChartPointer, { passive: true });
+        canvas.addEventListener('touchmove', handleChartPointer, { passive: true });
+ 
+        canvas.addEventListener('mouseleave', () => {
+          tooltip.classList.remove('visible');
+        });
+        window.addEventListener('touchend', () => {
+          tooltip.classList.remove('visible');
+        });
+ 
+        // Handle Responsive Resize for Canvas
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(() => {
+            renderDashboard();
+          }, 150);
+        });
+      }
+ 
+      /* ==========================================================================
+         Bootstrap App
+         ========================================================================== */
+      function init() {
+        loadExpenses();
+ 
+        // Default date picker to selected date
+        const inpDate = document.getElementById('inp-date');
+        if (inpDate) inpDate.value = state.selectedDateISO;
+ 
+        setupEvents();
+        render();
+      }
+ 
+      // Run on DOM Ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>

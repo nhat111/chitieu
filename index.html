@@ -1,2147 +1,930 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Chi tiêu cá nhân</title>
-  <style>
-    /* ==========================================================================
-       iOS System & Design Tokens
-       ========================================================================== */
-    :root {
-      --ios-bg: #0b0f14;
-      --ios-card-bg: rgba(26, 32, 44, 0.72);
-      --ios-card-solid: #161c24;
-      --ios-card-border: rgba(255, 255, 255, 0.08);
-      --ios-separator: rgba(255, 255, 255, 0.07);
-      
-      --ios-blue: #0A84FF;
-      --ios-blue-hover: #0071e3;
-      --ios-blue-subtle: rgba(10, 132, 255, 0.16);
-      --ios-green: #30D158;
-      --ios-red: #FF453A;
-      --ios-red-subtle: rgba(255, 69, 58, 0.15);
-      --ios-amber: #FF9F0A;
-      --ios-purple: #BF5AF2;
- 
-      --ios-text-primary: #FFFFFF;
-      --ios-text-secondary: rgba(235, 235, 245, 0.65);
-      --ios-text-tertiary: rgba(235, 235, 245, 0.38);
- 
-      --ios-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
-      --radius-sm: 10px;
-      --radius-md: 14px;
-      --radius-lg: 18px;
-      --radius-pill: 9999px;
- 
-      --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.35);
-      --shadow-modal: 0 20px 48px rgba(0, 0, 0, 0.6);
-      --ease-ios: cubic-bezier(0.25, 0.1, 0.25, 1);
-    }
- 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
- 
-    body {
-      background-color: var(--ios-bg);
-      color: var(--ios-text-primary);
-      font-family: var(--ios-font);
-      font-size: 15px;
-      line-height: 1.45;
-      letter-spacing: -0.2px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-      padding-bottom: 40px;
-    }
- 
-    /* ==========================================================================
-       Layout & Grid
-       ========================================================================== */
-    .app-container {
-      width: 100%;
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 0 16px;
-    }
- 
-    /* Sticky Header */
-    .app-header {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      background: rgba(11, 15, 20, 0.82);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--ios-separator);
-      padding: 12px 0 14px;
-      margin-bottom: 24px;
-    }
- 
-    .header-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
- 
-    .app-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
- 
-    .app-icon-badge {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, var(--ios-blue), #5e5ce6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      box-shadow: 0 4px 10px rgba(10, 132, 255, 0.3);
-    }
- 
-    .app-title {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.4px;
-    }
- 
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
- 
-    .header-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
- 
-    .nav-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
- 
-    .nav-title {
-      font-size: 16px;
-      font-weight: 600;
-      min-width: 155px;
-      text-align: center;
-    }
- 
-    .header-summary-pill {
-      background: var(--ios-card-solid);
-      border: 1px solid var(--ios-card-border);
-      padding: 6px 14px;
-      border-radius: var(--radius-pill);
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--ios-text-secondary);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
- 
-    .header-summary-pill strong {
-      color: var(--ios-text-primary);
-      font-weight: 700;
-    }
- 
-    /* Main Grid 2 Columns */
-    .main-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 24px;
-      align-items: start;
-    }
- 
-    .grid-column {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
- 
-    @media (max-width: 900px) {
-      .main-grid {
-        grid-template-columns: 1fr;
-      }
-    }
- 
-    /* ==========================================================================
-       iOS UI Components
-       ========================================================================== */
-    .ios-card {
-      background: var(--ios-card-bg);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid var(--ios-card-border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-card);
-      padding: 20px;
-      position: relative;
-      transition: transform 0.2s var(--ease-ios), border-color 0.2s var(--ease-ios);
-    }
- 
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
- 
-    .card-title {
-      font-size: 17px;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
- 
-    /* Segmented Control */
-    .segmented-control {
-      display: inline-flex;
-      background: rgba(118, 118, 128, 0.24);
-      padding: 3px;
-      border-radius: var(--radius-pill);
-      position: relative;
-      user-select: none;
-    }
- 
-    .segment-btn {
-      background: transparent;
-      border: none;
-      color: var(--ios-text-secondary);
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 500;
-      padding: 5px 14px;
-      border-radius: var(--radius-pill);
-      cursor: pointer;
-      transition: all 0.2s var(--ease-ios);
-    }
- 
-    .segment-btn.active {
-      background: #2c323d;
-      color: #ffffff;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
-      font-weight: 600;
-    }
- 
-    /* Buttons */
-    .ios-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 500;
-      padding: 8px 16px;
-      border-radius: var(--radius-pill);
-      border: 1px solid transparent;
-      cursor: pointer;
-      transition: all 0.18s var(--ease-ios);
-      outline: none;
-      white-space: nowrap;
-    }
- 
-    .ios-btn:active {
-      transform: scale(0.97);
-    }
- 
-    .ios-btn-primary {
-      background: var(--ios-blue);
-      color: #ffffff;
-      box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
-    }
- 
-    .ios-btn-primary:hover {
-      background: var(--ios-blue-hover);
-    }
- 
-    .ios-btn-secondary {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--ios-text-primary);
-      border: 1px solid var(--ios-card-border);
-    }
- 
-    .ios-btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.13);
-    }
- 
-    .ios-btn-ghost {
-      background: transparent;
-      color: var(--ios-blue);
-      padding: 6px 12px;
-    }
- 
-    .ios-btn-ghost:hover {
-      background: var(--ios-blue-subtle);
-    }
- 
-    .ios-btn-danger {
-      background: var(--ios-red-subtle);
-      color: var(--ios-red);
-      border: 1px solid rgba(255, 69, 58, 0.25);
-    }
- 
-    .ios-btn-danger:hover {
-      background: rgba(255, 69, 58, 0.25);
-    }
- 
-    .ios-btn-icon {
-      width: 32px;
-      height: 32px;
-      padding: 0;
-      border-radius: var(--radius-pill);
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--ios-text-primary);
-      border: 1px solid var(--ios-card-border);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 16px;
-      transition: all 0.18s var(--ease-ios);
-    }
- 
-    .ios-btn-icon:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
- 
-    .ios-btn-icon:active {
-      transform: scale(0.92);
-    }
- 
-    /* Form Controls */
-    .form-group {
-      margin-bottom: 14px;
-      position: relative;
-    }
- 
-    .form-label {
-      display: block;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--ios-text-secondary);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
- 
-    .ios-input,
-    .ios-select {
-      width: 100%;
-      background: rgba(18, 24, 33, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: var(--radius-md);
-      color: var(--ios-text-primary);
-      font-family: inherit;
-      font-size: 15px;
-      padding: 10px 14px;
-      outline: none;
-      transition: border-color 0.18s var(--ease-ios), box-shadow 0.18s var(--ease-ios);
-    }
- 
-    .ios-input:focus,
-    .ios-select:focus {
-      border-color: var(--ios-blue);
-      box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.25);
-    }
- 
-    .ios-input::placeholder {
-      color: var(--ios-text-tertiary);
-    }
- 
-    .field-error-msg {
-      font-size: 12px;
-      color: var(--ios-red);
-      margin-top: 5px;
-      display: none;
-    }
- 
-    .has-error .ios-input {
-      border-color: var(--ios-red);
-      box-shadow: 0 0 0 3px rgba(255, 69, 58, 0.2);
-    }
- 
-    .has-error .field-error-msg {
-      display: block;
-    }
- 
-    /* Subtle Card Shake Animation */
-    @keyframes iosShake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-6px); }
-      40%, 80% { transform: translateX(6px); }
-    }
-    .shake-error {
-      animation: iosShake 0.35s var(--ease-ios);
-    }
- 
-    /* ==========================================================================
-       Dashboard & KPI Row
-       ========================================================================== */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 20px;
-    }
- 
-    .kpi-cell {
-      background: rgba(255, 255, 255, 0.035);
-      border: 1px solid var(--ios-card-border);
-      border-radius: var(--radius-md);
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
- 
-    .kpi-title {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--ios-text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
- 
-    .kpi-value {
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--ios-text-primary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
- 
-    .kpi-subtitle {
-      font-size: 11px;
-      color: var(--ios-text-secondary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
- 
-    @media (max-width: 600px) {
-      .kpi-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
- 
-    /* Canvas Chart Area */
-    .chart-wrapper {
-      position: relative;
-      width: 100%;
-      height: 180px;
-      margin-top: 8px;
-    }
- 
-    canvas#expense-chart {
-      width: 100%;
-      height: 100%;
-      display: block;
-      cursor: crosshair;
-    }
- 
-    /* Custom iOS Chart Tooltip */
-    .chart-tooltip {
-      position: absolute;
-      pointer-events: none;
-      background: rgba(30, 36, 48, 0.95);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: var(--radius-sm);
-      padding: 6px 10px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #ffffff;
-      white-space: nowrap;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
-      transform: translate(-50%, -125%);
-      transition: opacity 0.15s ease, transform 0.15s ease;
-      opacity: 0;
-      z-index: 20;
-    }
- 
-    .chart-tooltip.visible {
-      opacity: 1;
-      transform: translate(-50%, -135%);
-    }
- 
-    /* ==========================================================================
-       Calendar & Weekly View
-       ========================================================================== */
-    .calendar-weekdays {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      text-align: center;
-      margin-bottom: 8px;
-    }
- 
-    .weekday-col {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--ios-text-tertiary);
-      padding: 4px 0;
-      text-transform: uppercase;
-    }
- 
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
-    }
- 
-    .day-cell {
-      aspect-ratio: 1 / 1;
-      min-height: 54px;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid transparent;
-      border-radius: var(--radius-md);
-      padding: 5px 6px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      cursor: pointer;
-      position: relative;
-      transition: all 0.15s var(--ease-ios);
-      user-select: none;
-    }
- 
-    .day-cell:hover {
-      background: rgba(255, 255, 255, 0.06);
-    }
- 
-    .day-cell.other-month {
-      opacity: 0.28;
-    }
- 
-    .day-cell.is-today .day-number {
-      background: var(--ios-blue);
-      color: #ffffff;
-      border-radius: var(--radius-pill);
-      width: 22px;
-      height: 22px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-    }
- 
-    .day-cell.is-selected {
-      border-color: var(--ios-blue);
-      background: var(--ios-blue-subtle) !important;
-    }
- 
-    .day-header-line {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-    }
- 
-    .day-number {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--ios-text-primary);
-    }
- 
-    .day-badge-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--ios-green);
-      display: none;
-    }
- 
-    .has-expense .day-badge-dot {
-      display: block;
-    }
- 
-    .day-amount-text {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--ios-text-secondary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      text-align: right;
-    }
- 
-    /* Weekly Grid View */
-    .week-view-list {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
-    }
- 
-    .week-day-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--ios-card-border);
-      border-radius: var(--radius-md);
-      padding: 12px 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: all 0.15s var(--ease-ios);
-      text-align: center;
-    }
- 
-    .week-day-card:hover {
-      background: rgba(255, 255, 255, 0.07);
-    }
- 
-    .week-day-card.is-selected {
-      border-color: var(--ios-blue);
-      background: var(--ios-blue-subtle);
-    }
- 
-    .week-day-title {
-      font-size: 12px;
-      color: var(--ios-text-tertiary);
-      text-transform: uppercase;
-      font-weight: 600;
-    }
- 
-    .week-day-num {
-      font-size: 18px;
-      font-weight: 700;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-    }
- 
-    .week-day-card.is-today .week-day-num {
-      background: var(--ios-blue);
-      color: #fff;
-    }
- 
-    .week-day-spent {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--ios-text-secondary);
-      margin-top: 4px;
-    }
- 
-    @media (max-width: 600px) {
-      .week-view-list {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
- 
-    /* ==========================================================================
-       Day Details & Expense List
-       ========================================================================== */
-    .details-toolbar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
- 
-    .details-search {
-      flex: 1;
-    }
- 
-    .details-filter {
-      width: 140px;
-    }
- 
-    .expense-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: 380px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
- 
-    /* iOS Cell Item */
-    .ios-cell {
-      background: rgba(255, 255, 255, 0.035);
-      border: 1px solid var(--ios-card-border);
-      border-radius: var(--radius-md);
-      padding: 12px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      transition: background 0.15s ease;
-    }
- 
-    .ios-cell:hover {
-      background: rgba(255, 255, 255, 0.06);
-    }
- 
-    .cell-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
- 
-    .cell-icon-box {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.08);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
- 
-    .cell-info {
-      min-width: 0;
-    }
- 
-    .cell-category {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--ios-text-primary);
-    }
- 
-    .cell-note {
-      font-size: 13px;
-      color: var(--ios-text-secondary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
- 
-    .cell-time {
-      font-size: 11px;
-      color: var(--ios-text-tertiary);
-    }
- 
-    .cell-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
-    }
- 
-    .cell-amount {
-      font-size: 15px;
-      font-weight: 700;
-      color: #ffffff;
-    }
- 
-    .cell-del-btn {
-      background: transparent;
-      border: none;
-      color: var(--ios-text-tertiary);
-      cursor: pointer;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s ease;
-    }
- 
-    .cell-del-btn:hover {
-      color: var(--ios-red);
-      background: var(--ios-red-subtle);
-    }
- 
-    .empty-state {
-      padding: 36px 16px;
-      text-align: center;
-      color: var(--ios-text-tertiary);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
- 
-    .empty-icon {
-      font-size: 32px;
-      opacity: 0.7;
-    }
- 
-    /* ==========================================================================
-       Modals (iOS Style Dialogs)
-       ========================================================================== */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      opacity: 0;
-      transition: opacity 0.2s var(--ease-ios);
-    }
- 
-    .modal-backdrop.open {
-      display: flex;
-      opacity: 1;
-    }
- 
-    .ios-modal-card {
-      background: #19202a;
-      border: 1px solid var(--ios-card-border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-modal);
-      width: 100%;
-      max-width: 480px;
-      padding: 24px;
-      transform: scale(0.95);
-      transition: transform 0.2s var(--ease-ios);
-    }
- 
-    .modal-backdrop.open .ios-modal-card {
-      transform: scale(1);
-    }
- 
-    .modal-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
- 
-    .modal-desc {
-      font-size: 13px;
-      color: var(--ios-text-secondary);
-      margin-bottom: 16px;
-    }
- 
-    .modal-textarea {
-      width: 100%;
-      height: 140px;
-      background: rgba(11, 15, 20, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: var(--radius-md);
-      color: #e0e0e0;
-      font-family: monospace;
-      font-size: 12px;
-      padding: 12px;
-      outline: none;
-      resize: vertical;
-      margin-bottom: 16px;
-    }
- 
-    .modal-textarea:focus {
-      border-color: var(--ios-blue);
-    }
- 
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
- 
-    /* iOS Toast Notification */
-    .ios-toast {
-      position: fixed;
-      top: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-30px);
-      z-index: 200;
-      background: rgba(28, 36, 48, 0.94);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #ffffff;
-      padding: 10px 20px;
-      border-radius: var(--radius-pill);
-      font-size: 14px;
-      font-weight: 600;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      pointer-events: none;
-      opacity: 0;
-      transition: all 0.25s var(--ease-ios);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
- 
-    .ios-toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-    }
- 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.12);
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0f14">
+<title>Chi tiêu cá nhân</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0b0f14;
+  --card: #141a23;
+  --card2: #1a222e;
+  --line: #293341;
+  --text: #f3f5f8;
+  --muted: #8c9aaa;
+  --blue: #0a84ff;
+  --green: #30d158;
+  --red: #ff453a;
+  --radius: 16px;
+  --ease: 200ms cubic-bezier(.2,.8,.2,1);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+button:disabled { opacity: .35; cursor: default; }
+.app { max-width: 1440px; margin: auto; padding: 28px 32px 48px; }
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(11,15,20,.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--line);
+  margin: -28px -32px 28px;
+  padding: 18px 32px;
+}
+.header-inner {
+  max-width: 1376px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-icon {
+  width: 42px; height: 42px; display: grid; place-items: center;
+  border-radius: 14px; background: rgba(10,132,255,.16);
+  color: #52a7ff; font-size: 23px;
+}
+h1 { font-size: 20px; margin: 0; letter-spacing: -.5px; }
+.subtitle { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.header-tools { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.period-nav { display: flex; align-items: center; gap: 8px; }
+.period-label { min-width: 120px; text-align: center; font-weight: 650; }
+.btn, .icon-btn, .segment {
+  border: 1px solid var(--line); background: var(--card2);
+  color: var(--text); transition: background var(--ease), border var(--ease),
+  transform var(--ease);
+}
+.btn {
+  border-radius: 999px; padding: 9px 15px;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 7px; white-space: nowrap;
+}
+.btn:hover, .icon-btn:hover { background: #253142; border-color: #41536b; }
+.btn:active, .icon-btn:active { transform: scale(.97); }
+.btn.primary { background: var(--blue); border-color: var(--blue); color: white; }
+.btn.primary:hover { background: #2694ff; }
+.btn.danger { color: var(--red); }
+.icon-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 20px;
+}
+.segmented {
+  display: inline-flex; background: #171e28; border: 1px solid var(--line);
+  border-radius: 999px; padding: 3px; gap: 2px;
+}
+.segment {
+  border: 0; background: transparent; color: var(--muted);
+  padding: 7px 14px; border-radius: 999px;
+}
+.segment[aria-pressed="true"] {
+  background: #344052; color: white; box-shadow: 0 1px 3px #0005;
+}
+main { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(340px,.85fr); gap: 24px; }
+.left-col, .right-col { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.card {
+  background: linear-gradient(145deg, rgba(23,31,42,.97), rgba(17,23,32,.97));
+  border: 1px solid rgba(125,148,175,.16);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: 0 10px 35px rgba(0,0,0,.12);
+  min-width: 0;
+}
+.card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
+h2 { font-size: 16px; margin: 0; font-weight: 650; letter-spacing: -.2px; }
+.eyebrow { color: var(--muted); font-size: 12px; }
+.kpis { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; }
+.kpi { background: rgba(255,255,255,.025); border: 1px solid rgba(125,148,175,.1); border-radius: 13px; padding: 13px; min-width: 0; }
+.kpi-label { color: var(--muted); font-size: 11px; margin-bottom: 7px; }
+.kpi-value { font-size: clamp(15px,1.4vw,21px); font-weight: 700; letter-spacing: -.4px; overflow-wrap: anywhere; }
+.kpi-value.small { font-size: 14px; line-height: 1.4; }
+.kpi-note { color: var(--muted); font-size: 11px; margin-top: 4px; }
+.chart-wrap { position: relative; margin-top: 22px; }
+canvas { width: 100%; height: 180px; display: block; touch-action: pan-y; }
+.tooltip {
+  position: absolute; display: none; pointer-events: none;
+  background: #283443; border: 1px solid #405169; color: white;
+  border-radius: 10px; padding: 7px 10px; font-size: 12px;
+  white-space: nowrap; box-shadow: 0 8px 24px #0005; z-index: 2;
+}
+.chart-legend { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; margin-top: 5px; }
+.calendar-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; gap: 10px; }
+.weekdays, .calendar-grid { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 5px; }
+.weekdays { margin-bottom: 8px; text-align: center; color: var(--muted); font-size: 11px; }
+.day-cell {
+  min-height: 78px; padding: 9px 5px; text-align: center;
+  border: 1px solid transparent; border-radius: 12px;
+  background: rgba(255,255,255,.025); color: var(--text);
+  transition: background var(--ease), border var(--ease);
+  position: relative; min-width: 0;
+}
+.day-cell:hover { background: #222e3d; }
+.day-cell.outside { opacity: .3; }
+.day-cell.today { border-color: rgba(10,132,255,.65); }
+.day-cell.selected { background: rgba(10,132,255,.2); border-color: var(--blue); }
+.day-number { font-size: 13px; font-weight: 600; }
+.day-amount { color: var(--muted); font-size: 10px; margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.day-dot { width: 4px; height: 4px; background: var(--blue); border-radius: 50%; margin: 4px auto 0; }
+.week-grid { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 8px; }
+.week-day {
+  border: 1px solid var(--line); border-radius: 13px; padding: 13px 4px;
+  background: rgba(255,255,255,.025); color: var(--text); text-align: center;
+  min-width: 0; transition: background var(--ease), border var(--ease);
+}
+.week-day:hover { background: #222e3d; }
+.week-day.selected { background: rgba(10,132,255,.18); border-color: var(--blue); }
+.week-day.today { box-shadow: inset 0 0 0 1px rgba(10,132,255,.4); }
+.week-name { color: var(--muted); font-size: 11px; }
+.week-number { font-size: 16px; font-weight: 700; margin: 5px 0 10px; }
+.week-amount { font-size: 10px; color: var(--muted); overflow-wrap: anywhere; }
+.week-total { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+.day-total { font-size: 24px; font-weight: 750; letter-spacing: -.7px; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 7px; }
+.control {
+  width: 100%; background: #0e141d; color: var(--text);
+  border: 1px solid #303c4b; border-radius: 12px; padding: 12px 13px;
+  min-height: 44px; transition: border var(--ease), box-shadow var(--ease);
+}
+.control:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(10,132,255,.15); }
+textarea.control { resize: vertical; min-height: 100px; }
+.field-error { color: #ff6961; font-size: 12px; margin-top: 5px; min-height: 0; }
+.field-error:empty { display: none; }
+.form-actions { display: flex; gap: 10px; align-items: center; }
+.form-actions .btn { flex: 1; }
+.day-search { display: flex; gap: 9px; margin-bottom: 16px; }
+.day-search .control { min-width: 0; }
+.day-search select { max-width: 145px; }
+.expense-list { display: flex; flex-direction: column; }
+.expense-item { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid rgba(125,148,175,.13); }
+.expense-item:last-child { border-bottom: 0; padding-bottom: 0; }
+.category-icon {
+  width: 40px; height: 40px; flex: 0 0 40px; display: grid; place-items: center;
+  border-radius: 13px; background: #202c3b; font-size: 19px;
+}
+.expense-info { flex: 1; min-width: 0; }
+.expense-name { font-weight: 600; overflow-wrap: anywhere; }
+.expense-meta { color: var(--muted); font-size: 11px; margin-top: 3px; }
+.expense-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.expense-amount { font-weight: 650; white-space: nowrap; }
+.delete-btn { border: 0; color: var(--muted); background: transparent; padding: 3px 6px; border-radius: 7px; font-size: 12px; }
+.delete-btn:hover { color: var(--red); background: rgba(255,69,58,.1); }
+.empty { text-align: center; padding: 28px 10px; color: var(--muted); }
+.empty-icon { font-size: 28px; margin-bottom: 8px; }
+.backup-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.backup-actions .btn { font-size: 12px; padding: 8px 12px; }
+.separator { height: 1px; background: var(--line); margin: 18px 0; }
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 30; display: none;
+  align-items: center; justify-content: center; padding: 20px;
+  background: rgba(0,0,0,.65); backdrop-filter: blur(8px);
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  width: min(100%,520px); background: #171f2b; border: 1px solid #344153;
+  border-radius: 18px; padding: 22px; box-shadow: 0 24px 80px #0008;
+  animation: modalIn 180ms ease-out;
+}
+.modal h2 { margin-bottom: 8px; }
+.modal p { color: var(--muted); font-size: 13px; margin: 0 0 18px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.modal .segmented { margin-bottom: 12px; }
+.toast {
+  position: fixed; z-index: 50; left: 50%; bottom: 28px;
+  transform: translate(-50%,20px); opacity: 0; pointer-events: none;
+  background: #273443; border: 1px solid #46566b; border-radius: 999px;
+  padding: 11px 18px; color: white; box-shadow: 0 8px 30px #0006;
+  transition: opacity var(--ease), transform var(--ease);
+}
+.toast.show { opacity: 1; transform: translate(-50%,0); }
+.shake { animation: shake 250ms ease; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+@keyframes modalIn { from{opacity:0;transform:translateY(8px) scale(.98)} to{opacity:1;transform:none} }
+@media(max-width:1000px) {
+  .app { padding: 20px; }
+  header { margin: -20px -20px 22px; padding: 16px 20px; }
+  main { grid-template-columns: minmax(0,1fr) minmax(300px,.8fr); gap: 16px; }
+  .left-col,.right-col { gap: 16px; }
+  .card { padding: 18px; }
+  .kpis { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .kpi-value { font-size: 19px; }
+}
+@media(max-width:760px) {
+  .app { padding: 14px; }
+  header { margin: -14px -14px 16px; padding: 13px 14px; }
+  .header-inner { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .header-tools { width: 100%; justify-content: space-between; }
+  .period-label { min-width: 100px; }
+  main { display: flex; flex-direction: column; gap: 16px; }
+  .left-col,.right-col { display: contents; }
+  .dashboard { order: 1; }
+  .calendar-card { order: 2; }
+  .details-card { order: 3; }
+  .form-card { order: 4; }
+  .backup-card { order: 5; }
+  .card { padding: 16px; }
+  .day-cell { min-height: 62px; padding: 7px 2px; }
+  .day-amount { font-size: 9px; margin-top: 5px; }
+  .week-grid { gap: 4px; }
+  .week-day { padding: 11px 2px; }
+  .week-amount { font-size: 9px; }
+  .day-search { flex-direction: column; }
+  .day-search select { max-width: none; }
+}
+@media(max-width:420px) {
+  .header-tools { gap: 7px; }
+  .period-nav { gap: 3px; }
+  .period-label { min-width: 94px; font-size: 12px; }
+  .header-tools .btn { padding: 8px 11px; }
+  .kpi { padding: 11px; }
+  .kpi-value { font-size: 17px; }
+  .day-cell { min-height: 55px; }
+  .day-number { font-size: 12px; }
+  .week-name { font-size: 10px; }
+  .week-number { font-size: 14px; }
+  .week-amount { font-size: 8px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation-duration: .01ms!important; transition-duration: .01ms!important; }
+}
+</style>
 </head>
 <body>
- 
-  <!-- Sticky Top Header -->
-  <header class="app-header">
-    <div class="app-container">
-      <div class="header-top">
-        <div class="app-brand">
-          <div class="app-icon-badge" aria-hidden="true">💳</div>
-          <h1 class="app-title">Chi tiêu cá nhân</h1>
-        </div>
-        <div class="header-actions">
-          <button id="btn-export-json" class="ios-btn ios-btn-secondary" aria-label="Xuất dữ liệu JSON">
-            <span>↑</span> Xuất JSON
-          </button>
-          <button id="btn-import-json" class="ios-btn ios-btn-secondary" aria-label="Nhập dữ liệu JSON">
-            <span>↓</span> Nhập JSON
-          </button>
-        </div>
-      </div>
- 
-      <div class="header-toolbar">
-        <div class="nav-controls">
-          <button id="btn-nav-prev" class="ios-btn-icon" aria-label="Kỳ trước">‹</button>
-          <div id="nav-title" class="nav-title">Tháng 11/2026</div>
-          <button id="btn-nav-next" class="ios-btn-icon" aria-label="Kỳ sau">›</button>
-          <button id="btn-nav-today" class="ios-btn ios-btn-ghost" aria-label="Về hôm nay">Hôm nay</button>
-        </div>
- 
-        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-          <!-- Segmented Control Tuần / Tháng -->
-          <div class="segmented-control" role="tablist" aria-label="Chế độ xem">
-            <button id="seg-btn-week" class="segment-btn" role="tab" aria-selected="false">Tuần</button>
-            <button id="seg-btn-month" class="segment-btn active" role="tab" aria-selected="true">Tháng</button>
-          </div>
-          <!-- Header Summary Pill -->
-          <div class="header-summary-pill" id="header-period-total">
-            <span>Tổng kỳ:</span> <strong>0 ₫</strong>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
- 
-  <!-- Main Content Grid -->
-  <main class="app-container">
-    <div class="main-grid">
- 
-      <!-- Left Column: Dashboard & Calendar/Weekly -->
-      <section class="grid-column">
-        <!-- Dashboard Card -->
-        <div class="ios-card" id="card-dashboard">
-          <div class="card-header">
-            <h2 class="card-title">📊 Tổng quan kỳ</h2>
-            <span class="header-summary-pill" id="kpi-mode-label">Chế độ Tháng</span>
-          </div>
- 
-          <!-- KPI Metrics Row -->
-          <div class="kpi-grid">
-            <div class="kpi-cell">
-              <span class="kpi-title">Tổng chi</span>
-              <span class="kpi-value" id="kpi-total">0 ₫</span>
-              <span class="kpi-subtitle" id="kpi-total-sub">0 giao dịch</span>
-            </div>
-            <div class="kpi-cell">
-              <span class="kpi-title">TB / Ngày</span>
-              <span class="kpi-value" id="kpi-avg">0 ₫</span>
-              <span class="kpi-subtitle" id="kpi-avg-sub">Trên số ngày kỳ</span>
-            </div>
-            <div class="kpi-cell">
-              <span class="kpi-title">Chi nhiều nhất</span>
-              <span class="kpi-value" id="kpi-max-amount">0 ₫</span>
-              <span class="kpi-subtitle" id="kpi-max-date">--/--</span>
-            </div>
-            <div class="kpi-cell">
-              <span class="kpi-title">Top danh mục</span>
-              <span class="kpi-value" id="kpi-top-cat">Chưa có</span>
-              <span class="kpi-subtitle" id="kpi-top-cat-sub">0 ₫</span>
-            </div>
-          </div>
- 
-          <!-- Custom Canvas Bar Chart -->
-          <div class="chart-wrapper">
-            <canvas id="expense-chart"></canvas>
-            <div id="chart-tooltip" class="chart-tooltip"></div>
-          </div>
-        </div>
- 
-        <!-- Calendar / Week View Card -->
-        <div class="ios-card" id="card-calendar">
-          <div class="card-header">
-            <h2 class="card-title" id="calendar-card-title">📅 Lịch chi tiêu</h2>
-            <span class="kpi-subtitle" id="calendar-hint">Nhấp ngày để xem & thêm chi tiêu</span>
-          </div>
-          <div id="calendar-content-area"></div>
-        </div>
-      </section>
- 
-      <!-- Right Column: Day Details & Add Expense Form -->
-      <section class="grid-column">
- 
-        <!-- Card: Chi tiết ngày -->
-        <div class="ios-card" id="card-day-details">
-          <div class="card-header">
-            <div>
-              <h2 class="card-title" id="day-detail-title">Chi tiết: --/--/----</h2>
-              <span class="kpi-subtitle" id="day-detail-summary">Tổng ngày: 0 ₫</span>
-            </div>
-          </div>
- 
-          <!-- Search & Filter Controls -->
-          <div class="details-toolbar">
-            <input type="text" id="filter-search-input" class="ios-input details-search" placeholder="🔍 Tìm ghi chú...">
-            <select id="filter-category-select" class="ios-select details-filter">
-              <option value="ALL">Tất cả mục</option>
-              <option value="Ăn uống">Ăn uống</option>
-              <option value="Di chuyển">Di chuyển</option>
-              <option value="Mua sắm">Mua sắm</option>
-              <option value="Hóa đơn">Hóa đơn</option>
-              <option value="Giải trí">Giải trí</option>
-              <option value="Sức khỏe">Sức khỏe</option>
-              <option value="Khác">Khác</option>
-            </select>
-          </div>
- 
-          <!-- Expense Items List -->
-          <div class="expense-list" id="day-expense-list"></div>
-        </div>
- 
-        <!-- Card: Thêm khoản chi -->
-        <div class="ios-card" id="card-expense-form">
-          <div class="card-header">
-            <h2 class="card-title">➕ Thêm khoản chi mới</h2>
-          </div>
- 
-          <form id="form-add-expense" novalidate>
-            <div class="form-group" id="group-amount">
-              <label for="inp-amount" class="form-label">Số tiền (VNĐ) *</label>
-              <input type="number" id="inp-amount" class="ios-input" placeholder="Ví dụ: 50000" min="1000" step="1000" required>
-              <div class="field-error-msg">Vui lòng nhập số tiền hợp lệ (> 0 đ)</div>
-            </div>
- 
-            <div class="form-group">
-              <label for="inp-category" class="form-label">Danh mục *</label>
-              <select id="inp-category" class="ios-select">
-                <option value="Ăn uống">🍔 Ăn uống</option>
-                <option value="Di chuyển">🚗 Di chuyển</option>
-                <option value="Mua sắm">🛍️ Mua sắm</option>
-                <option value="Hóa đơn">📄 Hóa đơn</option>
-                <option value="Giải trí">🎮 Giải trí</option>
-                <option value="Sức khỏe">💊 Sức khỏe</option>
-                <option value="Khác">📦 Khác</option>
-              </select>
-            </div>
- 
-            <div class="form-group">
-              <label for="inp-date" class="form-label">Ngày ghi nhận *</label>
-              <input type="date" id="inp-date" class="ios-input" required>
-            </div>
- 
-            <div class="form-group">
-              <label for="inp-note" class="form-label">Ghi chú (Tùy chọn)</label>
-              <input type="text" id="inp-note" class="ios-input" placeholder="Ví dụ: Ăn trưa đồng nghiệp, Đổ xăng...">
-            </div>
- 
-            <button type="submit" class="ios-btn ios-btn-primary" style="width: 100%; padding: 12px; margin-top: 6px;">
-              Lưu khoản chi
-            </button>
-          </form>
-        </div>
- 
-      </section>
-    </div>
-  </main>
- 
-  <!-- Export JSON Modal -->
-  <div id="modal-export" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-export-title">
-    <div class="ios-modal-card">
-      <h3 id="modal-export-title" class="modal-title">Xuất dữ liệu chi tiêu</h3>
-      <p class="modal-desc">Sao chép mã JSON dưới đây để lưu trữ hoặc chuyển sang thiết bị khác.</p>
-      <textarea id="export-textarea" class="modal-textarea" readonly></textarea>
-      <div class="modal-actions">
-        <button id="btn-export-close" class="ios-btn ios-btn-secondary">Đóng</button>
-        <button id="btn-export-copy" class="ios-btn ios-btn-primary">Sao chép JSON</button>
-      </div>
-    </div>
-  </div>
- 
-  <!-- Import JSON Modal -->
-  <div id="modal-import" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-import-title">
-    <div class="ios-modal-card">
-      <h3 id="modal-import-title" class="modal-title">Nhập dữ liệu chi tiêu</h3>
-      <p class="modal-desc">Dán nội dung JSON đã sao lưu vào khung bên dưới.</p>
-      
-      <div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
-        <span style="font-size: 13px; color: var(--ios-text-secondary);">Chế độ nhập:</span>
-        <div class="segmented-control">
-          <button id="import-mode-merge" class="segment-btn active" type="button">Gộp</button>
-          <button id="import-mode-replace" class="segment-btn" type="button">Ghi đè</button>
-        </div>
-      </div>
- 
-      <textarea id="import-textarea" class="modal-textarea" placeholder="[ { &quot;id&quot;: &quot;...&quot;, &quot;amount&quot;: 50000, ... } ]"></textarea>
-      
-      <div class="modal-actions">
-        <button id="btn-import-close" class="ios-btn ios-btn-secondary">Hủy</button>
-        <button id="btn-import-submit" class="ios-btn ios-btn-primary">Bắt đầu nhập</button>
-      </div>
-    </div>
-  </div>
- 
-  <!-- Delete Confirm Dialog -->
-  <div id="modal-delete" class="modal-backdrop" role="dialog" aria-modal="true">
-    <div class="ios-modal-card" style="max-width: 380px; text-align: center;">
-      <div style="font-size: 36px; margin-bottom: 8px;">🗑️</div>
-      <h3 class="modal-title">Xóa khoản chi?</h3>
-      <p class="modal-desc" style="margin-bottom: 20px;">Hành động này sẽ không thể khôi phục lại.</p>
-      <div class="modal-actions" style="justify-content: center;">
-        <button id="btn-delete-cancel" class="ios-btn ios-btn-secondary">Hủy</button>
-        <button id="btn-delete-confirm" class="ios-btn ios-btn-danger">Xóa luôn</button>
-      </div>
-    </div>
-  </div>
- 
-  <!-- Toast Notification -->
-  <div id="toast-pill" class="ios-toast" role="status" aria-live="polite">
-    <span id="toast-icon">✓</span>
-    <span id="toast-msg">Thông báo</span>
-  </div>
- 
-  <!-- Logic Script -->
-  <script>
-    (function () {
-      'use strict';
- 
-      /* ==========================================================================
-         Constants & Initial Setup
-         ========================================================================== */
-      const STORAGE_KEY = 'pem_expenses_v1';
- 
-      const CATEGORIES = [
-        'Ăn uống',
-        'Di chuyển',
-        'Mua sắm',
-        'Hóa đơn',
-        'Giải trí',
-        'Sức khỏe',
-        'Khác'
-      ];
- 
-      const CATEGORY_ICONS = {
-        'Ăn uống': '🍔',
-        'Di chuyển': '🚗',
-        'Mua sắm': '🛍️',
-        'Hóa đơn': '📄',
-        'Giải trí': '🎮',
-        'Sức khỏe': '💊',
-        'Khác': '📦'
-      };
- 
-      const WEEKDAY_NAMES = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
- 
-      const currencyFormatter = new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND'
-      });
- 
-      function formatVND(amount) {
-        return currencyFormatter.format(amount || 0);
-      }
- 
-      function formatCompactVND(amount) {
-        if (!amount) return '0 ₫';
-        if (amount >= 1000000) {
-          return (amount / 1000000).toFixed(1).replace('.0', '') + 'tr';
-        }
-        if (amount >= 1000) {
-          return Math.round(amount / 1000) + 'k';
-        }
-        return amount + '₫';
-      }
- 
-      /* Date Helpers */
-      function toISODate(d) {
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-      }
- 
-      function parseISODate(isoStr) {
-        const parts = (isoStr || '').split('-');
-        if (parts.length !== 3) return new Date();
-        return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-      }
- 
-      function formatDisplayDateVN(isoStr) {
-        const parts = (isoStr || '').split('-');
-        if (parts.length !== 3) return isoStr;
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
-      }
- 
-      function getMondayOfDate(d) {
-        const copy = new Date(d);
-        const day = copy.getDay(); // 0 is Sunday
-        const diff = copy.getDate() - day + (day === 0 ? -6 : 1);
-        copy.setDate(diff);
-        return copy;
-      }
- 
-      function getDaysInMonth(year, month) {
-        return new Date(year, month + 1, 0).getDate();
-      }
- 
-      /* Sample Data if LocalStorage is Empty */
-      function createSampleData() {
-        const now = new Date();
-        const y = now.getFullYear();
-        const m = now.getMonth();
-        const pad = (n) => String(n).padStart(2, '0');
- 
-        return [
-          {
-            id: 'exp_init_1',
-            dateISO: `${y}-${pad(m + 1)}-${pad(Math.min(2, getDaysInMonth(y, m)))}`,
-            amount: 45000,
-            category: 'Ăn uống',
-            note: 'Phở bò tái lăn',
-            createdAt: new Date().toISOString()
-          },
-          {
-            id: 'exp_init_2',
-            dateISO: `${y}-${pad(m + 1)}-${pad(Math.min(2, getDaysInMonth(y, m)))}`,
-            amount: 150000,
-            category: 'Di chuyển',
-            note: 'Đổ xăng xe máy',
-            createdAt: new Date().toISOString()
-          },
-          {
-            id: 'exp_init_3',
-            dateISO: `${y}-${pad(m + 1)}-${pad(Math.min(4, getDaysInMonth(y, m)))}`,
-            amount: 350000,
-            category: 'Mua sắm',
-            note: 'Áo thun Uniqlo',
-            createdAt: new Date().toISOString()
-          },
-          {
-            id: 'exp_init_4',
-            dateISO: `${y}-${pad(m + 1)}-${pad(Math.min(5, getDaysInMonth(y, m)))}`,
-            amount: 520000,
-            category: 'Hóa đơn',
-            note: 'Tiền internet tháng',
-            createdAt: new Date().toISOString()
-          },
-          {
-            id: 'exp_init_5',
-            dateISO: `${y}-${pad(m + 1)}-${pad(Math.min(7, getDaysInMonth(y, m)))}`,
-            amount: 120000,
-            category: 'Giải trí',
-            note: 'Vé xem phim cuối tuần',
-            createdAt: new Date().toISOString()
-          }
-        ];
-      }
- 
-      /* ==========================================================================
-         Application State
-         ========================================================================== */
-      const initialToday = new Date();
-      const state = {
-        viewMode: 'month', // 'month' | 'week'
-        currentYear: initialToday.getFullYear(),
-        currentMonth: initialToday.getMonth(), // 0-indexed
-        weekStartISO: toISODate(getMondayOfDate(initialToday)),
-        selectedDateISO: toISODate(initialToday),
-        filterCategory: 'ALL',
-        searchQuery: '',
-        importMode: 'merge', // 'merge' | 'replace'
-        deletingExpenseId: null,
-        expenses: []
-      };
- 
-      /* ==========================================================================
-         Storage Actions
-         ========================================================================== */
-      function loadExpenses() {
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (raw) {
-            state.expenses = JSON.parse(raw);
-          } else {
-            state.expenses = createSampleData();
-            saveExpenses();
-          }
-        } catch (e) {
-          console.error('Failed to load localStorage', e);
-          state.expenses = createSampleData();
-        }
-      }
- 
-      function saveExpenses() {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(state.expenses));
-        } catch (e) {
-          console.error('Failed to save to localStorage', e);
-          showToast('Lỗi lưu trữ cục bộ!', '⚠️');
-        }
-      }
- 
-      /* ==========================================================================
-         Calculations & Aggregate Selectors
-         ========================================================================== */
-      function computeDayTotal(dateISO) {
-        return state.expenses
-          .filter(e => e.dateISO === dateISO)
-          .reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
-      }
- 
-      function getWeekRange(weekStartISO) {
-        const monday = parseISODate(weekStartISO);
-        const dates = [];
-        for (let i = 0; i < 7; i++) {
-          const d = new Date(monday);
-          d.setDate(monday.getDate() + i);
-          dates.push(toISODate(d));
-        }
-        return dates;
-      }
- 
-      function computeRangeTotals(startISO, endISO) {
-        const inRange = state.expenses.filter(e => e.dateISO >= startISO && e.dateISO <= endISO);
-        const total = inRange.reduce((acc, cur) => acc + (Number(cur.amount) || 0), 0);
- 
-        // Group by day for max day
-        const dayMap = {};
-        inRange.forEach(e => {
-          dayMap[e.dateISO] = (dayMap[e.dateISO] || 0) + Number(e.amount);
-        });
- 
-        let maxDay = { dateISO: '', amount: 0 };
-        Object.keys(dayMap).forEach(d => {
-          if (dayMap[d] > maxDay.amount) {
-            maxDay = { dateISO: d, amount: dayMap[d] };
-          }
-        });
- 
-        // Group by category for top category
-        const catMap = {};
-        inRange.forEach(e => {
-          catMap[e.category] = (catMap[e.category] || 0) + Number(e.amount);
-        });
- 
-        let topCat = { category: 'Chưa có', amount: 0 };
-        Object.keys(catMap).forEach(c => {
-          if (catMap[c] > topCat.amount) {
-            topCat = { category: c, amount: catMap[c] };
-          }
-        });
- 
-        return {
-          total,
-          count: inRange.length,
-          dayMap,
-          maxDay,
-          topCat
-        };
-      }
- 
-      /* ==========================================================================
-         Render Subroutines
-         ========================================================================== */
- 
-      // 1. Render Header
-      function renderHeader() {
-        const navTitleEl = document.getElementById('nav-title');
-        const headerPeriodTotalEl = document.getElementById('header-period-total');
-        const segBtnWeek = document.getElementById('seg-btn-week');
-        const segBtnMonth = document.getElementById('seg-btn-month');
- 
-        if (state.viewMode === 'month') {
-          segBtnMonth.classList.add('active');
-          segBtnWeek.classList.remove('active');
-          segBtnMonth.setAttribute('aria-selected', 'true');
-          segBtnWeek.setAttribute('aria-selected', 'false');
- 
-          const monthName = `Tháng ${String(state.currentMonth + 1).padStart(2, '0')}/${state.currentYear}`;
-          navTitleEl.textContent = monthName;
- 
-          const daysInM = getDaysInMonth(state.currentYear, state.currentMonth);
-          const startISO = `${state.currentYear}-${String(state.currentMonth + 1).padStart(2, '0')}-01`;
-          const endISO = `${state.currentYear}-${String(state.currentMonth + 1).padStart(2, '0')}-${String(daysInM).padStart(2, '0')}`;
-          const metrics = computeRangeTotals(startISO, endISO);
- 
-          headerPeriodTotalEl.innerHTML = `<span>Tổng tháng:</span> <strong>${formatVND(metrics.total)}</strong>`;
-        } else {
-          segBtnWeek.classList.add('active');
-          segBtnMonth.classList.remove('active');
-          segBtnWeek.setAttribute('aria-selected', 'true');
-          segBtnMonth.setAttribute('aria-selected', 'false');
- 
-          const weekDates = getWeekRange(state.weekStartISO);
-          const startStr = formatDisplayDateVN(weekDates[0]);
-          const endStr = formatDisplayDateVN(weekDates[6]);
-          navTitleEl.textContent = `${startStr.slice(0, 5)} - ${endStr.slice(0, 5)}`;
- 
-          const metrics = computeRangeTotals(weekDates[0], weekDates[6]);
-          headerPeriodTotalEl.innerHTML = `<span>Tổng tuần:</span> <strong>${formatVND(metrics.total)}</strong>`;
-        }
-      }
- 
-      // 2. Render Dashboard (KPIs + Canvas Bar Chart)
-      let chartBarPositions = []; // To store hitboxes for custom tooltip
- 
-      function renderDashboard() {
-        const kpiModeLabel = document.getElementById('kpi-mode-label');
-        const kpiTotal = document.getElementById('kpi-total');
-        const kpiTotalSub = document.getElementById('kpi-total-sub');
-        const kpiAvg = document.getElementById('kpi-avg');
-        const kpiAvgSub = document.getElementById('kpi-avg-sub');
-        const kpiMaxAmount = document.getElementById('kpi-max-amount');
-        const kpiMaxDate = document.getElementById('kpi-max-date');
-        const kpiTopCat = document.getElementById('kpi-top-cat');
-        const kpiTopCatSub = document.getElementById('kpi-top-cat-sub');
- 
-        let startISO, endISO, numDaysInPeriod, chartData = [];
- 
-        if (state.viewMode === 'month') {
-          kpiModeLabel.textContent = 'Kỳ Tháng';
-          numDaysInPeriod = getDaysInMonth(state.currentYear, state.currentMonth);
-          startISO = `${state.currentYear}-${String(state.currentMonth + 1).padStart(2, '0')}-01`;
-          endISO = `${state.currentYear}-${String(state.currentMonth + 1).padStart(2, '0')}-${String(numDaysInPeriod).padStart(2, '0')}`;
- 
-          for (let d = 1; d <= numDaysInPeriod; d++) {
-            const dateISO = `${state.currentYear}-${String(state.currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-            chartData.push({
-              label: String(d),
-              dateISO,
-              amount: computeDayTotal(dateISO)
-            });
-          }
-        } else {
-          kpiModeLabel.textContent = 'Kỳ Tuần';
-          numDaysInPeriod = 7;
-          const weekDates = getWeekRange(state.weekStartISO);
-          startISO = weekDates[0];
-          endISO = weekDates[6];
- 
-          chartData = weekDates.map((dISO, idx) => ({
-            label: `${WEEKDAY_NAMES[idx]} ${dISO.slice(8, 10)}`,
-            dateISO: dISO,
-            amount: computeDayTotal(dISO)
-          }));
-        }
- 
-        const metrics = computeRangeTotals(startISO, endISO);
- 
-        kpiTotal.textContent = formatVND(metrics.total);
-        kpiTotalSub.textContent = `${metrics.count} khoản chi`;
- 
-        const avg = numDaysInPeriod > 0 ? Math.round(metrics.total / numDaysInPeriod) : 0;
-        kpiAvg.textContent = formatVND(avg);
-        kpiAvgSub.textContent = state.viewMode === 'month' ? `${numDaysInPeriod} ngày trong tháng` : '7 ngày trong tuần';
- 
-        if (metrics.maxDay.amount > 0) {
-          kpiMaxAmount.textContent = formatVND(metrics.maxDay.amount);
-          kpiMaxDate.textContent = formatDisplayDateVN(metrics.maxDay.dateISO);
-        } else {
-          kpiMaxAmount.textContent = '0 ₫';
-          kpiMaxDate.textContent = 'Không có';
-        }
- 
-        if (metrics.topCat.amount > 0) {
-          const icon = CATEGORY_ICONS[metrics.topCat.category] || '🏷️';
-          kpiTopCat.textContent = `${icon} ${metrics.topCat.category}`;
-          kpiTopCatSub.textContent = formatVND(metrics.topCat.amount);
-        } else {
-          kpiTopCat.textContent = 'Chưa có';
-          kpiTopCatSub.textContent = '0 ₫';
-        }
- 
-        drawCanvasChart(chartData, metrics.maxDay.dateISO);
-      }
- 
-      function drawCanvasChart(data, maxDateISO) {
-        const canvas = document.getElementById('expense-chart');
-        if (!canvas) return;
- 
-        const ctx = canvas.getContext('2d');
-        const dpr = window.devicePixelRatio || 1;
-        const rect = canvas.getBoundingClientRect();
- 
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
-        ctx.scale(dpr, dpr);
- 
-        const width = rect.width;
-        const height = rect.height;
- 
-        ctx.clearRect(0, 0, width, height);
-        chartBarPositions = [];
- 
-        if (data.length === 0) return;
- 
-        const paddingBottom = 26;
-        const paddingTop = 16;
-        const chartH = height - paddingBottom - paddingTop;
- 
-        const maxVal = Math.max(...data.map(d => d.amount), 50000);
- 
-        const n = data.length;
-        const totalGap = (n - 1) * 4;
-        const barWidth = Math.max(3, (width - 24 - totalGap) / n);
-        const startX = 12;
- 
-        data.forEach((item, i) => {
-          const x = startX + i * (barWidth + 4);
-          const barH = (item.amount / maxVal) * chartH;
-          const y = height - paddingBottom - barH;
- 
-          chartBarPositions.push({
-            x,
-            y,
-            width: barWidth,
-            height: barH || 4,
-            dateISO: item.dateISO,
-            amount: item.amount
-          });
- 
-          // Bar Background Track (iOS subtle pill)
-          ctx.beginPath();
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-          const trackRadius = Math.min(barWidth / 2, 4);
-          roundRect(ctx, x, paddingTop, barWidth, chartH, trackRadius);
-          ctx.fill();
- 
-          // Bar Foreground
-          if (item.amount > 0) {
-            ctx.beginPath();
-            if (item.dateISO === maxDateISO && item.amount > 0) {
-              ctx.fillStyle = '#FF9F0A'; // Apple Amber highlight for highest day
-            } else if (item.dateISO === state.selectedDateISO) {
-              ctx.fillStyle = '#30D158'; // Green for selected date
-            } else {
-              ctx.fillStyle = '#0A84FF'; // iOS standard Blue
-            }
-            roundRect(ctx, x, y, barWidth, barH, Math.min(barWidth / 2, 4));
-            ctx.fill();
-          }
- 
-          // X Axis Labels
-          ctx.fillStyle = 'rgba(235, 235, 245, 0.4)';
-          ctx.font = '10px -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
-          ctx.textAlign = 'center';
- 
-          if (state.viewMode === 'month') {
-            // Label selectively to prevent clutter
-            const dayNum = Number(item.label);
-            if (dayNum === 1 || dayNum === 10 || dayNum === 20 || dayNum === n) {
-              ctx.fillText(String(dayNum), x + barWidth / 2, height - 8);
-            }
-          } else {
-            // Week mode: Show T2, T3...
-            ctx.fillText(item.label, x + barWidth / 2, height - 8);
-          }
-        });
-      }
- 
-      function roundRect(ctx, x, y, width, height, radius) {
-        if (height < radius * 2) radius = height / 2;
-        if (width < radius * 2) radius = width / 2;
-        ctx.beginPath();
-        ctx.moveTo(x + radius, y);
-        ctx.arcTo(x + width, y, x + width, y + height, radius);
-        ctx.arcTo(x + width, y + height, x, y + height, radius);
-        ctx.arcTo(x, y + height, x, y, radius);
-        ctx.arcTo(x, y, x + width, y, radius);
-        ctx.closePath();
-      }
- 
-      // 3. Render Calendar or Week View
-      function renderCalendarOrWeek() {
-        const area = document.getElementById('calendar-content-area');
-        const calTitle = document.getElementById('calendar-card-title');
-        const todayISO = toISODate(new Date());
- 
-        if (state.viewMode === 'month') {
-          calTitle.innerHTML = '📅 Lịch chi tiêu tháng';
-          let html = `
-            <div class="calendar-weekdays" aria-hidden="true">
-              <div class="weekday-col">T2</div>
-              <div class="weekday-col">T3</div>
-              <div class="weekday-col">T4</div>
-              <div class="weekday-col">T5</div>
-              <div class="weekday-col">T6</div>
-              <div class="weekday-col">T7</div>
-              <div class="weekday-col">CN</div>
-            </div>
-            <div class="calendar-grid">
-          `;
- 
-          const year = state.currentYear;
-          const month = state.currentMonth;
-          const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0 is Sun
-          const startOffset = (firstDayOfMonth === 0 ? 7 : firstDayOfMonth) - 1; // Mon = 0
-          const daysInMonth = getDaysInMonth(year, month);
-          const daysInPrevMonth = getDaysInMonth(year, month - 1);
- 
-          // Cells from previous month
-          for (let i = startOffset - 1; i >= 0; i--) {
-            const pDay = daysInPrevMonth - i;
-            html += `
-              <div class="day-cell other-month" aria-disabled="true">
-                <div class="day-number">${pDay}</div>
-              </div>
-            `;
-          }
- 
-          // Days in current month
-          for (let d = 1; d <= daysInMonth; d++) {
-            const dISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-            const total = computeDayTotal(dISO);
-            const isToday = dISO === todayISO;
-            const isSelected = dISO === state.selectedDateISO;
-            const hasExpense = total > 0;
- 
-            html += `
-              <div class="day-cell ${isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''} ${hasExpense ? 'has-expense' : ''}" 
-                   data-date="${dISO}" 
-                   tabindex="0"
-                   role="button"
-                   aria-label="Ngày ${d} tháng ${month + 1}, chi tiêu ${formatVND(total)}">
-                <div class="day-header-line">
-                  <span class="day-number">${d}</span>
-                  <span class="day-badge-dot" aria-hidden="true"></span>
-                </div>
-                <div class="day-amount-text">${total > 0 ? formatCompactVND(total) : ''}</div>
-              </div>
-            `;
-          }
- 
-          // Fill trailing empty cells for clean grid
-          const totalCells = startOffset + daysInMonth;
-          const remaining = (7 - (totalCells % 7)) % 7;
-          for (let i = 1; i <= remaining; i++) {
-            html += `
-              <div class="day-cell other-month" aria-disabled="true">
-                <div class="day-number">${i}</div>
-              </div>
-            `;
-          }
- 
-          html += `</div>`;
-          area.innerHTML = html;
- 
-        } else {
-          // Week View Mode
-          calTitle.innerHTML = '🗓️ Chi tiêu trong tuần';
-          const weekDates = getWeekRange(state.weekStartISO);
-          let html = `<div class="week-view-list">`;
- 
-          weekDates.forEach((dISO, idx) => {
-            const total = computeDayTotal(dISO);
-            const isToday = dISO === todayISO;
-            const isSelected = dISO === state.selectedDateISO;
-            const dObj = parseISODate(dISO);
- 
-            html += `
-              <div class="week-day-card ${isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''}" 
-                   data-date="${dISO}" 
-                   tabindex="0"
-                   role="button"
-                   aria-label="${WEEKDAY_NAMES[idx]} ngày ${dObj.getDate()}, chi tiêu ${formatVND(total)}">
-                <span class="week-day-title">${WEEKDAY_NAMES[idx]}</span>
-                <span class="week-day-num">${dObj.getDate()}</span>
-                <span class="week-day-spent">${total > 0 ? formatCompactVND(total) : '0 ₫'}</span>
-              </div>
-            `;
-          });
- 
-          html += `</div>`;
-          area.innerHTML = html;
-        }
- 
-        // Attach Click Listeners to Calendar Cells
-        area.querySelectorAll('[data-date]').forEach(el => {
-          el.addEventListener('click', () => {
-            state.selectedDateISO = el.getAttribute('data-date');
-            document.getElementById('inp-date').value = state.selectedDateISO;
-            render();
-          });
-        });
-      }
- 
-      // 4. Render Day Details
-      function renderDayDetails() {
-        const titleEl = document.getElementById('day-detail-title');
-        const summaryEl = document.getElementById('day-detail-summary');
-        const listEl = document.getElementById('day-expense-list');
- 
-        const displayDate = formatDisplayDateVN(state.selectedDateISO);
-        titleEl.textContent = `Chi tiết: ${displayDate}`;
- 
-        const dayTotal = computeDayTotal(state.selectedDateISO);
-        summaryEl.textContent = `Tổng ngày: ${formatVND(dayTotal)}`;
- 
-        // Filter and Search
-        let items = state.expenses.filter(e => e.dateISO === state.selectedDateISO);
- 
-        if (state.filterCategory !== 'ALL') {
-          items = items.filter(e => e.category === state.filterCategory);
-        }
- 
-        if (state.searchQuery.trim() !== '') {
-          const q = state.searchQuery.toLowerCase();
-          items = items.filter(e => 
-            (e.note && e.note.toLowerCase().includes(q)) ||
-            e.category.toLowerCase().includes(q)
-          );
-        }
- 
-        // Sort by creation time descending
-        items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
- 
-        if (items.length === 0) {
-          listEl.innerHTML = `
-            <div class="empty-state">
-              <span class="empty-icon">☕</span>
-              <p>Chưa có khoản chi nào phù hợp.</p>
-              <p style="font-size: 12px; color: var(--ios-text-tertiary);">Nhập thông tin bên dưới để thêm mới.</p>
-            </div>
-          `;
-          return;
-        }
- 
-        let html = '';
-        items.forEach(item => {
-          const icon = CATEGORY_ICONS[item.category] || '🏷️';
-          const timeStr = item.createdAt ? new Date(item.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) : '';
-          
-          html += `
-            <div class="ios-cell">
-              <div class="cell-left">
-                <div class="cell-icon-box" aria-hidden="true">${icon}</div>
-                <div class="cell-info">
-                  <div class="cell-category">${item.category}</div>
-                  <div class="cell-note" title="${escapeHtml(item.note || 'Không có ghi chú')}">
-                    ${escapeHtml(item.note || 'Không có ghi chú')}
-                  </div>
-                  ${timeStr ? `<div class="cell-time">${timeStr}</div>` : ''}
-                </div>
-              </div>
-              <div class="cell-right">
-                <span class="cell-amount">${formatVND(item.amount)}</span>
-                <button class="cell-del-btn" data-delete-id="${item.id}" aria-label="Xóa khoản chi ${item.category}">
-                  ✕
-                </button>
-              </div>
-            </div>
-          `;
-        });
- 
-        listEl.innerHTML = html;
- 
-        // Attach Delete Click Listeners
-        listEl.querySelectorAll('[data-delete-id]').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            state.deletingExpenseId = btn.getAttribute('data-delete-id');
-            openDeleteModal();
-          });
-        });
-      }
- 
-      function escapeHtml(str) {
-        if (!str) return '';
-        return String(str)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#039;');
-      }
- 
-      // Master Render
-      function render() {
-        renderHeader();
-        renderDashboard();
-        renderCalendarOrWeek();
-        renderDayDetails();
-      }
- 
-      /* ==========================================================================
-         Toast System
-         ========================================================================== */
-      let toastTimer = null;
-      function showToast(msg, icon = '✓') {
-        const toastEl = document.getElementById('toast-pill');
-        const iconEl = document.getElementById('toast-icon');
-        const msgEl = document.getElementById('toast-msg');
- 
-        iconEl.textContent = icon;
-        msgEl.textContent = msg;
- 
-        toastEl.classList.add('show');
-        if (toastTimer) clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-          toastEl.classList.remove('show');
-        }, 2400);
-      }
- 
-      /* ==========================================================================
-         Modals Handlers
-         ========================================================================== */
-      const modalExport = document.getElementById('modal-export');
-      const modalImport = document.getElementById('modal-import');
-      const modalDelete = document.getElementById('modal-delete');
- 
-      function openModal(el) {
-        el.classList.add('open');
-      }
- 
-      function closeModal(el) {
-        el.classList.remove('open');
-      }
- 
-      function openDeleteModal() {
-        openModal(modalDelete);
-      }
-/* ==========================================================================
-         Event Listeners Initialization
-         ========================================================================== */
-      function setupEvents() {
-        // 1. Navigation Prev / Next / Today
-        document.getElementById('btn-nav-prev').addEventListener('click', () => {
-          if (state.viewMode === 'month') {
-            state.currentMonth--;
-            if (state.currentMonth < 0) {
-              state.currentMonth = 11;
-              state.currentYear--;
-            }
-          } else {
-            const currentMon = parseISODate(state.weekStartISO);
-            currentMon.setDate(currentMon.getDate() - 7);
-            state.weekStartISO = toISODate(currentMon);
-          }
-          render();
-        });
- 
-        document.getElementById('btn-nav-next').addEventListener('click', () => {
-          if (state.viewMode === 'month') {
-            state.currentMonth++;
-            if (state.currentMonth > 11) {
-              state.currentMonth = 0;
-              state.currentYear++;
-            }
-          } else {
-            const currentMon = parseISODate(state.weekStartISO);
-            currentMon.setDate(currentMon.getDate() + 7);
-            state.weekStartISO = toISODate(currentMon);
-          }
-          render();
-        });
- 
-        document.getElementById('btn-nav-today').addEventListener('click', () => {
-          const now = new Date();
-          state.currentYear = now.getFullYear();
-          state.currentMonth = now.getMonth();
-          state.weekStartISO = toISODate(getMondayOfDate(now));
-          state.selectedDateISO = toISODate(now);
-          document.getElementById('inp-date').value = state.selectedDateISO;
-          render();
-        });
- 
-        // 2. Segmented Mode Switcher (Tuần / Tháng)
-        document.getElementById('seg-btn-month').addEventListener('click', () => {
-          state.viewMode = 'month';
-          render();
-        });
- 
-        document.getElementById('seg-btn-week').addEventListener('click', () => {
-          state.viewMode = 'week';
-          // Align week to current selected date
-          state.weekStartISO = toISODate(getMondayOfDate(parseISODate(state.selectedDateISO)));
-          render();
-        });
- 
-        // 3. Search and Category Filter
-        document.getElementById('filter-search-input').addEventListener('input', (e) => {
-          state.searchQuery = e.target.value;
-          renderDayDetails();
-        });
- 
-        document.getElementById('filter-category-select').addEventListener('change', (e) => {
-          state.filterCategory = e.target.value;
-          renderDayDetails();
-        });
- 
-        // 4. Form Submit: Add Expense
-        const formExpense = document.getElementById('form-add-expense');
-        const inpAmount = document.getElementById('inp-amount');
-        const groupAmount = document.getElementById('group-amount');
-        const cardForm = document.getElementById('card-expense-form');
- 
-        formExpense.addEventListener('submit', (e) => {
-          e.preventDefault();
- 
-          const amountVal = Number(inpAmount.value);
-          if (!amountVal || amountVal <= 0) {
-            groupAmount.classList.add('has-error');
-            cardForm.classList.remove('shake-error');
-            void cardForm.offsetWidth; // Trigger reflow
-            cardForm.classList.add('shake-error');
-            inpAmount.focus();
-            return;
-          }
- 
-          groupAmount.classList.remove('has-error');
-          cardForm.classList.remove('shake-error');
- 
-          const categoryVal = document.getElementById('inp-category').value;
-          const dateVal = document.getElementById('inp-date').value || state.selectedDateISO;
-          const noteVal = document.getElementById('inp-note').value.trim();
- 
-          const newExpense = {
-            id: 'exp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
-            dateISO: dateVal,
-            amount: amountVal,
-            category: categoryVal,
-            note: noteVal,
-            createdAt: new Date().toISOString()
-          };
- 
-          state.expenses.push(newExpense);
-          saveExpenses();
- 
-          // Sync calendar selection to date of new expense
-          state.selectedDateISO = dateVal;
-          const dObj = parseISODate(dateVal);
-          state.currentYear = dObj.getFullYear();
-          state.currentMonth = dObj.getMonth();
-          state.weekStartISO = toISODate(getMondayOfDate(dObj));
- 
-          // Reset inputs
-          inpAmount.value = '';
-          document.getElementById('inp-note').value = '';
- 
-          render();
-          showToast('Đã lưu khoản chi mới!', '✓');
-        });
- 
-        inpAmount.addEventListener('input', () => {
-          if (Number(inpAmount.value) > 0) {
-            groupAmount.classList.remove('has-error');
-          }
-        });
- 
-        // 5. Delete Expense Modal Handlers
-        document.getElementById('btn-delete-cancel').addEventListener('click', () => {
-          state.deletingExpenseId = null;
-          closeModal(modalDelete);
-        });
- 
-        document.getElementById('btn-delete-confirm').addEventListener('click', () => {
-          if (state.deletingExpenseId) {
-            state.expenses = state.expenses.filter(e => e.id !== state.deletingExpenseId);
-            saveExpenses();
-            state.deletingExpenseId = null;
-            closeModal(modalDelete);
-            render();
-            showToast('Đã xóa khoản chi!', '🗑️');
-          }
-        });
- 
-        // 6. Export JSON
-        document.getElementById('btn-export-json').addEventListener('click', () => {
-          const jsonText = JSON.stringify(state.expenses, null, 2);
-          document.getElementById('export-textarea').value = jsonText;
-          openModal(modalExport);
-        });
- 
-        document.getElementById('btn-export-close').addEventListener('click', () => {
-          closeModal(modalExport);
-        });
- 
-        document.getElementById('btn-export-copy').addEventListener('click', () => {
-          const textarea = document.getElementById('export-textarea');
-          textarea.select();
-          navigator.clipboard.writeText(textarea.value).then(() => {
-            showToast('Đã sao chép vào bộ nhớ tạm!', '📋');
-          }).catch(() => {
-            showToast('Không thể sao chép tự động!', '⚠️');
-          });
-        });
- 
-        // 7. Import JSON
-        const importModeMergeBtn = document.getElementById('import-mode-merge');
-        const importModeReplaceBtn = document.getElementById('import-mode-replace');
- 
-        importModeMergeBtn.addEventListener('click', () => {
-          state.importMode = 'merge';
-          importModeMergeBtn.classList.add('active');
-          importModeReplaceBtn.classList.remove('active');
-        });
- 
-        importModeReplaceBtn.addEventListener('click', () => {
-          state.importMode = 'replace';
-          importModeReplaceBtn.classList.add('active');
-          importModeMergeBtn.classList.remove('active');
-        });
- 
-        document.getElementById('btn-import-json').addEventListener('click', () => {
-          document.getElementById('import-textarea').value = '';
-          openModal(modalImport);
-        });
- 
-        document.getElementById('btn-import-close').addEventListener('click', () => {
-          closeModal(modalImport);
-        });
- 
-        document.getElementById('btn-import-submit').addEventListener('click', () => {
-          const raw = document.getElementById('import-textarea').value.trim();
-          if (!raw) {
-            showToast('Vui lòng dán dữ liệu JSON!', '⚠️');
-            return;
-          }
- 
-          try {
-            const parsed = JSON.parse(raw);
-            if (!Array.isArray(parsed)) {
-              throw new Error('Dữ liệu phải là một mảng []');
-            }
- 
-            // Simple validation of item structure
-            const validItems = parsed.filter(item => item && item.amount && item.dateISO);
-            if (validItems.length === 0) {
-              throw new Error('Không có mục chi tiêu hợp lệ');
-            }
- 
-            if (state.importMode === 'replace') {
-              state.expenses = validItems;
-            } else {
-              // Merge and deduplicate by id
-              const existingMap = new Map(state.expenses.map(e => [e.id, e]));
-              validItems.forEach(item => {
-                const id = item.id || ('exp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6));
-                existingMap.set(id, { ...item, id });
-              });
-              state.expenses = Array.from(existingMap.values());
-            }
- 
-            saveExpenses();
-            closeModal(modalImport);
-            render();
-            showToast(`Nhập thành công (${validItems.length} khoản)!`, '✓');
-          } catch (err) {
-            console.error(err);
-            showToast('JSON không hợp lệ!', '⚠️');
-          }
-        });
- 
-        // Close modals on clicking backdrop
-        [modalExport, modalImport, modalDelete].forEach(modal => {
-          modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-              closeModal(modal);
-            }
-          });
-        });
- 
-        // 8. Custom Canvas Tooltip on Hover/Touch
-        const canvas = document.getElementById('expense-chart');
-        const tooltip = document.getElementById('chart-tooltip');
- 
-        function handleChartPointer(evt) {
-          const rect = canvas.getBoundingClientRect();
-          const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
-          const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
- 
-          const mouseX = clientX - rect.left;
-          const mouseY = clientY - rect.top;
- 
-          // Find bar match
-          const hit = chartBarPositions.find(b => mouseX >= b.x - 3 && mouseX <= b.x + b.width + 3);
- 
-          if (hit) {
-            const displayDate = formatDisplayDateVN(hit.dateISO);
-            tooltip.textContent = `${displayDate}: ${formatVND(hit.amount)}`;
-            tooltip.style.left = `${hit.x + hit.width / 2}px`;
-            tooltip.style.top = `${hit.y}px`;
-            tooltip.classList.add('visible');
-          } else {
-            tooltip.classList.remove('visible');
-          }
-        }
- 
-        canvas.addEventListener('mousemove', handleChartPointer);
-        canvas.addEventListener('touchstart', handleChartPointer, { passive: true });
-        canvas.addEventListener('touchmove', handleChartPointer, { passive: true });
- 
-        canvas.addEventListener('mouseleave', () => {
-          tooltip.classList.remove('visible');
-        });
-        window.addEventListener('touchend', () => {
-          tooltip.classList.remove('visible');
-        });
- 
-        // Handle Responsive Resize for Canvas
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-          clearTimeout(resizeTimeout);
-          resizeTimeout = setTimeout(() => {
-            renderDashboard();
-          }, 150);
-        });
-      }
- 
-      /* ==========================================================================
-         Bootstrap App
-         ========================================================================== */
-      function init() {
-        loadExpenses();
- 
-        // Default date picker to selected date
-        const inpDate = document.getElementById('inp-date');
-        if (inpDate) inpDate.value = state.selectedDateISO;
- 
-        setupEvents();
-        render();
-      }
- 
-      // Run on DOM Ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-      } else {
-        init();
-      }
-    })();
-  </script>
+<div class="app">
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">◷</div>
+      <div>
+        <h1>Chi tiêu cá nhân</h1>
+        <div class="subtitle">Quản lý tài chính của bạn</div>
+      </div>
+    </div>
+    <div class="header-tools">
+      <div class="period-nav">
+        <button class="icon-btn" id="prevPeriod" aria-label="Kỳ trước">‹</button>
+        <div class="period-label" id="periodLabel"></div>
+        <button class="icon-btn" id="nextPeriod" aria-label="Kỳ tiếp theo">›</button>
+      </div>
+      <button class="btn" id="todayBtn">Hôm nay</button>
+      <div class="segmented" role="group" aria-label="Chế độ xem">
+        <button class="segment" data-mode="week" aria-pressed="false">Tuần</button>
+        <button class="segment" data-mode="month" aria-pressed="true">Tháng</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="left-col">
+    <section class="card dashboard" aria-label="Tổng quan chi tiêu">
+      <div class="card-head">
+        <div>
+          <h2 id="dashboardTitle">Tổng quan tháng</h2>
+          <div class="eyebrow" id="dashboardSubtitle"></div>
+        </div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><div class="kpi-label">Tổng chi</div><div class="kpi-value" id="kpiTotal">0 ₫</div><div class="kpi-note" id="kpiPeriod"></div></div>
+        <div class="kpi"><div class="kpi-label">Trung bình/ngày</div><div class="kpi-value" id="kpiAverage">0 ₫</div><div class="kpi-note">Trong kỳ đang xem</div></div>
+        <div class="kpi"><div class="kpi-label">Ngày chi nhiều nhất</div><div class="kpi-value small" id="kpiMax">—</div><div class="kpi-note" id="kpiMaxDate"></div></div>
+        <div class="kpi"><div class="kpi-label">Danh mục top 1</div><div class="kpi-value small" id="kpiCategory">—</div><div class="kpi-note" id="kpiCategoryTotal"></div></div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="expenseChart" aria-label="Biểu đồ chi tiêu theo ngày"></canvas>
+        <div class="tooltip" id="chartTooltip"></div>
+      </div>
+      <div class="chart-legend"><span>Chi tiêu theo ngày</span><span id="chartRange"></span></div>
+    </section>
+
+    <section class="card calendar-card">
+      <div class="calendar-head">
+        <div><h2 id="calendarTitle">Lịch chi tiêu</h2><div class="eyebrow" id="calendarSubtitle"></div></div>
+        <div class="period-nav">
+          <button class="icon-btn" id="prevView" aria-label="Kỳ trước">‹</button>
+          <button class="icon-btn" id="nextView" aria-label="Kỳ tiếp theo">›</button>
+        </div>
+      </div>
+      <div id="calendarContent"></div>
+      <div class="week-total" id="calendarTotal">
+        <span class="eyebrow">Tổng trong kỳ</span><strong id="calendarTotalValue">0 ₫</strong>
+      </div>
+    </section>
+  </div>
+
+  <div class="right-col">
+    <section class="card details-card">
+      <div class="card-head">
+        <div><h2 id="detailsTitle">Chi tiết ngày</h2><div class="eyebrow" id="detailsSubtitle"></div></div>
+        <span class="eyebrow" id="expenseCount"></span>
+      </div>
+      <div class="day-total" id="dayTotal">0 ₫</div>
+      <div class="separator"></div>
+      <div class="day-search">
+        <input class="control" id="searchNote" type="search" placeholder="Tìm theo ghi chú…" aria-label="Tìm theo ghi chú">
+        <select class="control" id="filterCategory" aria-label="Lọc danh mục"></select>
+      </div>
+      <div class="expense-list" id="expenseList"></div>
+    </section>
+
+    <section class="card form-card" id="expenseFormCard">
+      <div class="card-head"><div><h2>Thêm khoản chi</h2><div class="eyebrow">Ghi lại chi tiêu trong ngày</div></div></div>
+      <form id="expenseForm" novalidate>
+        <div class="field">
+          <label for="amount">Số tiền (VND)</label>
+          <input class="control" id="amount" type="number" min="1" step="1" inputmode="numeric" placeholder="Ví dụ: 150000">
+          <div class="field-error" id="amountError"></div>
+        </div>
+        <div class="field">
+          <label for="category">Danh mục</label>
+          <select class="control" id="category"></select>
+          <div class="field-error" id="categoryError"></div>
+        </div>
+        <div class="field">
+          <label for="note">Ghi chú (không bắt buộc)</label>
+          <input class="control" id="note" maxlength="180" placeholder="Ví dụ: Ăn trưa cùng đồng nghiệp">
+          <div class="field-error" id="noteError"></div>
+        </div>
+        <div class="field">
+          <label for="expenseDate">Ngày chi</label>
+          <input class="control" id="expenseDate" type="date">
+          <div class="field-error" id="dateError"></div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn primary">＋ Thêm khoản chi</button>
+          <button type="reset" class="btn" id="resetForm">Xóa form</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card backup-card">
+      <div class="card-head"><div><h2>Sao lưu dữ liệu</h2><div class="eyebrow">Xuất hoặc khôi phục khoản chi</div></div></div>
+      <div class="backup-actions">
+        <button class="btn" id="exportBtn">↗ Xuất JSON</button>
+        <button class="btn" id="importBtn">↙ Nhập JSON</button>
+      </div>
+      <div class="eyebrow" style="margin-top:12px">Dữ liệu tự lưu trên thiết bị này.</div>
+    </section>
+  </div>
+</main>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop" role="presentation">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 id="modalTitle"></h2>
+    <p id="modalDescription"></p>
+    <div id="modalContent"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+
+const STORAGE_KEY = 'pem_expenses_v1';
+const CATEGORIES = ['Ăn uống','Di chuyển','Mua sắm','Hóa đơn','Giải trí','Sức khỏe','Khác'];
+const CATEGORY_ICONS = {
+  'Ăn uống':'🍜','Di chuyển':'🚗','Mua sắm':'🛍️','Hóa đơn':'🧾',
+  'Giải trí':'🎬','Sức khỏe':'💊','Khác':'📦'
+};
+const money = new Intl.NumberFormat('vi-VN',{style:'currency',currency:'VND',maximumFractionDigits:0});
+const shortMoney = new Intl.NumberFormat('vi-VN',{notation:'compact',maximumFractionDigits:1});
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2,'0');
+const toISO = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const fromISO = iso => {
+  const [y,m,d] = iso.split('-').map(Number);
+  return new Date(y,m-1,d);
+};
+const addDays = (iso,n) => {
+  const d = fromISO(iso); d.setDate(d.getDate()+n); return toISO(d);
+};
+const formatDate = iso => {
+  const d = fromISO(iso);
+  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+};
+const monthName = (y,m) => new Intl.DateTimeFormat('vi-VN',{month:'long',year:'numeric'}).format(new Date(y,m,1));
+const escapeHTML = value => String(value).replace(/[&<>"']/g, ch => ({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[ch]));
+const todayISO = () => toISO(new Date());
+const startOfWeek = iso => {
+  const d = fromISO(iso);
+  d.setDate(d.getDate() - ((d.getDay()+6)%7));
+  return toISO(d);
+};
+
+const state = {
+  viewMode:'month',
+  currentMonth:new Date().getMonth(),
+  currentYear:new Date().getFullYear(),
+  selectedDateISO:todayISO(),
+  weekStartISO:startOfWeek(todayISO()),
+  expenses:[],
+  search:'',
+  filter:'all'
+};
+
+let toastTimer;
+let chartBars = [];
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return;
+    state.expenses = parsed.filter(isValidExpense);
+  } catch (error) {
+    console.error('Không thể đọc dữ liệu:',error);
+  }
+}
+function save() {
+  try {
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(state.expenses));
+    showToast('Đã lưu');
+  } catch (error) {
+    showToast('Không thể lưu dữ liệu');
+  }
+}
+function isValidExpense(item) {
+  return item && typeof item.id === 'string' &&
+    /^\d{4}-\d{2}-\d{2}$/.test(item.dateISO) &&
+    Number.isFinite(Number(item.amount)) && Number(item.amount)>0 &&
+    CATEGORIES.includes(item.category) &&
+    typeof item.note === 'string' &&
+    (typeof item.createdAt === 'string' || typeof item.createdAt === 'number');
+}
+function computeDayTotal(dateISO) {
+  return state.expenses.reduce((sum,e)=>sum+(e.dateISO===dateISO?Number(e.amount):0),0);
+}
+function computeRangeTotals(startISO,endISO) {
+  const map = new Map();
+  state.expenses.forEach(e => {
+    if (e.dateISO>=startISO && e.dateISO<=endISO)
+      map.set(e.dateISO,(map.get(e.dateISO)||0)+Number(e.amount));
+  });
+  let total=0,max=0,maxDate=null;
+  map.forEach((amount,date)=>{
+    total+=amount;
+    if (amount>max) { max=amount; maxDate=date; }
+  });
+  return {total,map,max,maxDate};
+}
+function getWeekRange(weekStartISO) {
+  return {start:weekStartISO,end:addDays(weekStartISO,6)};
+}
+function getRange() {
+  if (state.viewMode==='week') return getWeekRange(state.weekStartISO);
+  const start = toISO(new Date(state.currentYear,state.currentMonth,1));
+  const end = toISO(new Date(state.currentYear,state.currentMonth+1,0));
+  return {start,end};
+}
+function getPeriodExpenses() {
+  const {start,end}=getRange();
+  return state.expenses.filter(e=>e.dateISO>=start&&e.dateISO<=end);
+}
+function render() {
+  renderHeader();
+  renderDashboard();
+  renderCalendarOrWeek();
+  renderDayDetails();
+}
+function renderHeader() {
+  const week = getWeekRange(state.weekStartISO);
+  $('periodLabel').textContent = state.viewMode==='month'
+    ? monthName(state.currentYear,state.currentMonth)
+    : `${pad(fromISO(week.start).getDate())}/${pad(fromISO(week.start).getMonth()+1)} – ${pad(fromISO(week.end).getDate())}/${pad(fromISO(week.end).getMonth()+1)}`;
+  document.querySelectorAll('[data-mode]').forEach(btn =>
+    btn.setAttribute('aria-pressed',String(btn.dataset.mode===state.viewMode)));
+  $('prevView').setAttribute('aria-label',state.viewMode==='month'?'Tháng trước':'Tuần trước');
+  $('nextView').setAttribute('aria-label',state.viewMode==='month'?'Tháng sau':'Tuần sau');
+}
+function renderDashboard() {
+  const {start,end}=getRange();
+  const totals=computeRangeTotals(start,end);
+  const periodExpenses=getPeriodExpenses();
+  const days=state.viewMode==='week'?7:fromISO(end).getDate();
+  const categoryTotals=new Map();
+  periodExpenses.forEach(e=>categoryTotals.set(e.category,(categoryTotals.get(e.category)||0)+Number(e.amount)));
+  let topCategory=null,topAmount=0;
+  categoryTotals.forEach((amount,category)=>{
+    if(amount>topAmount){topAmount=amount;topCategory=category;}
+  });
+  $('dashboardTitle').textContent=state.viewMode==='week'?'Tổng quan tuần':'Tổng quan tháng';
+  $('dashboardSubtitle').textContent=state.viewMode==='week'
+    ?`${formatDate(start)} – ${formatDate(end)}`
+    :monthName(state.currentYear,state.currentMonth);
+  $('kpiTotal').textContent=money.format(totals.total);
+  $('kpiPeriod').textContent=`${periodExpenses.length} khoản chi`;
+  $('kpiAverage').textContent=money.format(Math.round(totals.total/days));
+  $('kpiMax').textContent=totals.max?money.format(totals.max):'—';
+  $('kpiMaxDate').textContent=totals.maxDate?formatDate(totals.maxDate):'Chưa có khoản chi';
+  $('kpiCategory').textContent=topCategory||'—';
+  $('kpiCategoryTotal').textContent=topCategory?money.format(topAmount):'Chưa có khoản chi';
+  $('chartRange').textContent=state.viewMode==='week'?'Thứ 2 – Chủ nhật':'Ngày trong tháng';
+  drawChart(totals.map,start,end);
+}
+function drawChart(map,start,end) {
+  const canvas=$('expenseChart');
+  const rect=canvas.getBoundingClientRect();
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  const width=Math.max(280,rect.width);
+  const height=180;
+  canvas.width=width*dpr; canvas.height=height*dpr;
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,width,height);
+  const days=[];
+  for(let date=start;date<=end;date=addDays(date,1)) days.push(date);
+  const values=days.map(date=>map.get(date)||0);
+  const max=Math.max(...values,1);
+  const left=8,right=8,top=12,bottom=25;
+  const chartW=width-left-right,chartH=height-top-bottom;
+  const gap=days.length>20?4:8;
+  const barW=Math.max(2,(chartW-gap*(days.length-1))/days.length);
+  const maxIndex=values.indexOf(max);
+  const today=todayISO();
+  chartBars=[];
+  ctx.font='10px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.textAlign='center';
+  ctx.fillStyle='#718196';
+  for(let i=0;i<days.length;i++) {
+    const x=left+i*(barW+gap);
+    const h=values[i]?Math.max(4,chartH*values[i]/max):2;
+    const y=top+chartH-h;
+    const isMax=values[i]>0&&i===maxIndex;
+    const isToday=days[i]===today;
+    ctx.fillStyle=isMax?'#30d158':isToday?'#52a7ff':'#0a84ff';
+    const r=Math.min(5,barW/2);
+    ctx.beginPath();
+    ctx.roundRect(x,y,barW,h,[r,r,Math.min(2,r),Math.min(2,r)]);
+    ctx.fill();
+    const label=fromISO(days[i]).getDate();
+    if(days.length<=14||i%Math.ceil(days.length/8)===0||i===days.length-1) {
+      ctx.fillStyle=isToday?'#52a7ff':'#718196';
+      ctx.fillText(label,x+barW/2,height-7);
+    }
+    chartBars.push({x,y,w:barW,h,date:days[i],value:values[i]});
+  }
+}
+function renderCalendarOrWeek() {
+  $('calendarTitle').textContent=state.viewMode==='month'?'Lịch chi tiêu':'Chi tiêu trong tuần';
+  $('calendarSubtitle').textContent=state.viewMode==='month'
+    ?'Chọn ngày để xem chi tiết':'Chọn một ngày trong tuần';
+  const container=$('calendarContent');
+  if(state.viewMode==='month') renderMonth(container);
+  else renderWeek(container);
+  const {start,end}=getRange();
+  $('calendarTotalValue').textContent=money.format(computeRangeTotals(start,end).total);
+}
+function renderMonth(container) {
+  const first=new Date(state.currentYear,state.currentMonth,1);
+  const offset=(first.getDay()+6)%7;
+  const start=toISO(new Date(state.currentYear,state.currentMonth,1-offset));
+  const weekdays=['T2','T3','T4','T5','T6','T7','CN'];
+  let html=`<div class="weekdays">${weekdays.map(d=>`<div>${d}</div>`).join('')}</div><div class="calendar-grid">`;
+  for(let i=0;i<42;i++) {
+    const date=addDays(start,i);
+    const d=fromISO(date);
+    const total=computeDayTotal(date);
+    const classes=['day-cell'];
+    if(d.getMonth()!==state.currentMonth) classes.push('outside');
+    if(date===todayISO()) classes.push('today');
+    if(date===state.selectedDateISO) classes.push('selected');
+    html+=`<button class="${classes.join(' ')}" data-date="${date}" aria-label="${formatDate(date)}, ${money.format(total)}">
+      <div class="day-number">${d.getDate()}</div>
+      <div class="day-amount">${total?shortMoney.format(total)+' ₫':''}</div>
+      ${total?'<div class="day-dot"></div>':''}
+    </button>`;
+  }
+  html+='</div>';
+  container.innerHTML=html;
+}
+function renderWeek(container) {
+  const names=['T2','T3','T4','T5','T6','T7','CN'];
+  let html='<div class="week-grid">';
+  for(let i=0;i<7;i++) {
+    const date=addDays(state.weekStartISO,i);
+    const d=fromISO(date);
+    const classes=['week-day'];
+    if(date===state.selectedDateISO) classes.push('selected');
+    if(date===todayISO()) classes.push('today');
+    html+=`<button class="${classes.join(' ')}" data-date="${date}" aria-label="${formatDate(date)}, ${money.format(computeDayTotal(date))}">
+      <div class="week-name">${names[i]}</div>
+      <div class="week-number">${d.getDate()}</div>
+      <div class="week-amount">${computeDayTotal(date)?shortMoney.format(computeDayTotal(date))+' ₫':'—'}</div>
+    </button>`;
+  }
+  html+='</div>';
+  container.innerHTML=html;
+}
+function renderDayDetails() {
+  const date=state.selectedDateISO;
+  $('detailsTitle').textContent=`Chi tiết: ${formatDate(date)}`;
+  $('detailsSubtitle').textContent='Các khoản chi trong ngày';
+  const list=state.expenses.filter(e=>e.dateISO===date);
+  const filtered=list.filter(e=>
+    e.note.toLocaleLowerCase('vi').includes(state.search.toLocaleLowerCase('vi')) &&
+    (state.filter==='all'||e.category===state.filter));
+  $('dayTotal').textContent=money.format(computeDayTotal(date));
+  $('expenseCount').textContent=`${filtered.length} khoản`;
+  const container=$('expenseList');
+  if(!filtered.length) {
+    container.innerHTML=`<div class="empty"><div class="empty-icon">◷</div><div>${list.length?'Không tìm thấy khoản chi phù hợp':'Chưa có khoản chi'}</div><div class="eyebrow">${list.length?'Thử thay đổi bộ lọc.':'Thêm khoản chi đầu tiên của ngày này.'}</div></div>`;
+    return;
+  }
+  container.innerHTML=filtered.slice().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(e=>{
+    const time=new Date(e.createdAt);
+    const timeText=Number.isNaN(time.getTime())?'':time.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+    return `<div class="expense-item">
+      <div class="category-icon" aria-hidden="true">${CATEGORY_ICONS[e.category]}</div>
+      <div class="expense-info">
+        <div class="expense-name">${escapeHTML(e.note||e.category)}</div>
+        <div class="expense-meta">${escapeHTML(e.category)} · ${timeText}</div>
+      </div>
+      <div class="expense-right">
+        <div class="expense-amount">${money.format(e.amount)}</div>
+        <button class="delete-btn" data-delete="${escapeHTML(e.id)}" aria-label="Xóa khoản chi ${escapeHTML(e.note||e.category)}">⌫ Xóa</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function showToast(message) {
+  const toast=$('toast');
+  toast.textContent=message;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toast.classList.remove('show'),2400);
+}
+function setSelectedDate(date) {
+  state.selectedDateISO=date;
+  state.weekStartISO=startOfWeek(date);
+  const d=fromISO(date);
+  state.currentMonth=d.getMonth();
+  state.currentYear=d.getFullYear();
+  $('expenseDate').value=date;
+  render();
+}
+function movePeriod(direction) {
+  if(state.viewMode==='week') {
+    state.weekStartISO=addDays(state.weekStartISO,7*direction);
+    state.selectedDateISO=addDays(state.selectedDateISO,7*direction);
+  } else {
+    const d=new Date(state.currentYear,state.currentMonth+direction,1);
+    state.currentMonth=d.getMonth();
+    state.currentYear=d.getFullYear();
+    const day=Math.min(fromISO(state.selectedDateISO).getDate(),new Date(state.currentYear,state.currentMonth+1,0).getDate());
+    state.selectedDateISO=toISO(new Date(state.currentYear,state.currentMonth,day));
+  }
+  $('expenseDate').value=state.selectedDateISO;
+  render();
+}
+function renderCategoryOptions() {
+  $('category').innerHTML=CATEGORIES.map(c=>`<option value="${c}">${c}</option>`).join('');
+  $('filterCategory').innerHTML='<option value="all">Tất cả danh mục</option>'+CATEGORIES.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+function clearErrors() {
+  ['amount','category','note','date'].forEach(id=>$(id+'Error').textContent='');
+}
+function validateForm() {
+  clearErrors();
+  let valid=true;
+  const amount=Number($('amount').value);
+  const category=$('category').value;
+  const date=$('expenseDate').value;
+  if(!Number.isFinite(amount)||amount<=0) {
+    $('amountError').textContent='Số tiền phải lớn hơn 0.';
+    valid=false;
+  } else if(!Number.isSafeInteger(amount)) {
+    $('amountError').textContent='Số tiền phải là số nguyên hợp lệ.';
+    valid=false;
+  }
+  if(!CATEGORIES.includes(category)) {
+    $('categoryError').textContent='Vui lòng chọn danh mục.';
+    valid=false;
+  }
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number.isNaN(fromISO(date).getTime())||toISO(fromISO(date))!==date) {
+    $('dateError').textContent='Vui lòng chọn ngày hợp lệ.';
+    valid=false;
+  }
+  if(!valid) {
+    const card=$('expenseFormCard');
+    card.classList.remove('shake');
+    void card.offsetWidth;
+    card.classList.add('shake');
+  }
+  return valid;
+}
+function addExpense(event) {
+  event.preventDefault();
+  if(!validateForm()) return;
+  const expense={
+    id:crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    dateISO:$('expenseDate').value,
+    amount:Number($('amount').value),
+    category:$('category').value,
+    note:$('note').value.trim(),
+    createdAt:new Date().toISOString()
+  };
+  state.expenses.push(expense);
+  setSelectedDate(expense.dateISO);
+  $('amount').value='';
+  $('note').value='';
+  clearErrors();
+  save();
+  render();
+}
+function deleteExpense(id) {
+  const expense=state.expenses.find(e=>e.id===id);
+  if(!expense) return;
+  openModal('Xóa khoản chi?','Khoản chi này sẽ bị xóa khỏi dữ liệu của bạn.',null,[
+    {label:'Hủy',action:closeModal},
+    {label:'Xóa',danger:true,action:()=>{
+      state.expenses=state.expenses.filter(e=>e.id!==id);
+      closeModal();
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(state.expenses));
+      render();
+      showToast('Đã xóa');
+    }}
+  ]);
+}
+function openModal(title,description,content,actions) {
+  $('modalTitle').textContent=title;
+  $('modalDescription').textContent=description||'';
+  $('modalContent').innerHTML='';
+  if(content) $('modalContent').append(content);
+  const actionsEl=$('modalActions');
+  actionsEl.innerHTML='';
+  actions.forEach(item=>{
+    const btn=document.createElement('button');
+    btn.className='btn'+(item.danger?' danger':'');
+    btn.textContent=item.label;
+    btn.addEventListener('click',item.action);
+    actionsEl.append(btn);
+  });
+  $('modalBackdrop').classList.add('open');
+  const first=actionsEl.querySelector('button');
+  if(first) first.focus();
+}
+function closeModal() { $('modalBackdrop').classList.remove('open'); }
+function exportJSON() {
+  const area=document.createElement('textarea');
+  area.className='control';
+  area.readOnly=true;
+  area.rows=9;
+  area.value=JSON.stringify(state.expenses,null,2);
+  openModal('Xuất dữ liệu JSON','Sao chép nội dung bên dưới để lưu bản sao.',area,[
+    {label:'Đóng',action:closeModal},
+    {label:'Sao chép',action:async()=>{
+      try {
+        await navigator.clipboard.writeText(area.value);
+        showToast('Đã sao chép JSON');
+      } catch {
+        area.focus(); area.select();
+        document.execCommand('copy');
+        showToast('Đã sao chép JSON');
+      }
+    }}
+  ]);
+}
+function importJSON() {
+  const wrap=document.createElement('div');
+  const mode=document.createElement('div');
+  mode.className='segmented';
+  mode.setAttribute('role','group');
+  mode.innerHTML='<button type="button" class="segment" data-import-mode="merge" aria-pressed="true">Gộp</button><button type="button" class="segment" data-import-mode="replace" aria-pressed="false">Ghi đè</button>';
+  const area=document.createElement('textarea');
+  area.className='control';
+  area.rows=9;
+  area.placeholder='Dán nội dung JSON đã xuất…';
+  wrap.append(mode,area);
+  let importMode='merge';
+  mode.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{
+    importMode=btn.dataset.importMode;
+    mode.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));
+  }));
+  openModal('Nhập dữ liệu JSON','Chọn cách nhập dữ liệu, sau đó dán JSON vào ô bên dưới.',wrap,[
+    {label:'Hủy',action:closeModal},
+    {label:'Nhập dữ liệu',action:()=>{
+      let parsed;
+      try {
+        parsed=JSON.parse(area.value);
+        if(!Array.isArray(parsed)||!parsed.every(isValidExpense)) throw new Error('invalid');
+      } catch {
+        showToast('JSON không hợp lệ');
+        return;
+      }
+      if(importMode==='replace') state.expenses=parsed;
+      else {
+        const ids=new Set(state.expenses.map(e=>e.id));
+        parsed.forEach(e=>{
+          if(!ids.has(e.id)) state.expenses.push(e);
+        });
+      }
+      closeModal();
+      save();
+      render();
+      showToast('Nhập thành công');
+    }}
+  ]);
+}
+function bindEvents() {
+  $('prevPeriod').addEventListener('click',()=>movePeriod(-1));
+  $('nextPeriod').addEventListener('click',()=>movePeriod(1));
+  $('prevView').addEventListener('click',()=>movePeriod(-1));
+  $('nextView').addEventListener('click',()=>movePeriod(1));
+  $('todayBtn').addEventListener('click',()=>{
+    state.viewMode=state.viewMode||'month';
+    setSelectedDate(todayISO());
+  });
+  document.querySelectorAll('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{
+    state.viewMode=btn.dataset.mode;
+    state.weekStartISO=startOfWeek(state.selectedDateISO);
+    render();
+  }));
+  $('calendarContent').addEventListener('click',event=>{
+    const btn=event.target.closest('[data-date]');
+    if(btn) setSelectedDate(btn.dataset.date);
+  });
+  $('expenseForm').addEventListener('submit',addExpense);
+  $('expenseForm').addEventListener('reset',()=>{
+    setTimeout(()=>{
+      $('expenseDate').value=state.selectedDateISO;
+      clearErrors();
+    },0);
+  });
+  $('expenseList').addEventListener('click',event=>{
+    const btn=event.target.closest('[data-delete]');
+    if(btn) deleteExpense(btn.dataset.delete);
+  });
+  $('searchNote').addEventListener('input',event=>{
+    state.search=event.target.value;
+    renderDayDetails();
+  });
+  $('filterCategory').addEventListener('change',event=>{
+    state.filter=event.target.value;
+    renderDayDetails();
+  });
+  $('exportBtn').addEventListener('click',exportJSON);
+  $('importBtn').addEventListener('click',importJSON);
+  $('modalBackdrop').addEventListener('click',event=>{
+    if(event.target===$('modalBackdrop')) closeModal();
+  });
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape') closeModal();
+  });
+  const canvas=$('expenseChart');
+  const tooltip=$('chartTooltip');
+  function showChartTooltip(event) {
+    if(!chartBars.length) return;
+    const rect=canvas.getBoundingClientRect();
+    const x=event.clientX-rect.left;
+    const y=event.clientY-rect.top;
+    const bar=chartBars.find(b=>x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h);
+    if(!bar) { tooltip.style.display='none'; return; }
+    tooltip.textContent=`${formatDate(bar.date)}: ${money.format(bar.value)}`;
+    tooltip.style.display='block';
+    tooltip.style.left=Math.max(0,Math.min(rect.width-tooltip.offsetWidth,x-tooltip.offsetWidth/2))+'px';
+    tooltip.style.top=Math.max(0,y-tooltip.offsetHeight-8)+'px';
+  }
+  canvas.addEventListener('mousemove',showChartTooltip);
+  canvas.addEventListener('mouseleave',()=>tooltip.style.display='none');
+  canvas.addEventListener('click',event=>{
+    showChartTooltip(event);
+    const rect=canvas.getBoundingClientRect();
+    const x=event.clientX-rect.left;
+    const bar=chartBars.find(b=>x>=b.x&&x<=b.x+b.w);
+    if(bar) setSelectedDate(bar.date);
+  });
+  window.addEventListener('resize',()=>drawChart(computeRangeTotals(getRange().start,getRange().end).map,getRange().start,getRange().end));
+}
+load();
+renderCategoryOptions();
+bindEvents();
+$('expenseDate').value=state.selectedDateISO;
+render();
+})();
+</script>
 </body>
 </html>
